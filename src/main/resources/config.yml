@@ -1,0 +1,5 @@
+postgresql:
+  url: jdbc:postgresql://localhost:5432/hectus
+  user: username
+  passwd: password
+  table: invade_playerdata

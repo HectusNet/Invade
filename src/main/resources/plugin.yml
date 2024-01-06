@@ -1,0 +1,30 @@
+### Plugin Name ###
+name: Invade
+
+### Plugin Description ###
+description: Plugin for Hectus' game mode called "Invade", where you search items while trying not to die, kill other players and survive.
+
+### Build Version ###
+version: '${version}'
+
+### Main Class ###
+main: net.hectus.invade.Invade
+
+### PaperAPI Version ###
+api-version: '1.20'
+
+### Developers of the Plugin ###
+authors:
+  - MarcPG
+
+### Plugin Website ###
+website: https://hectus.net/invade/
+
+### Plugin Prefix ###
+prefix: Invade
+
+### All Commands ###
+commands:
+  ## Starts an Invade game with all players on the server ##
+  start:
+    usage: /<command>
