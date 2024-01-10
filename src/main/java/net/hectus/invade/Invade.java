@@ -4,6 +4,8 @@ import net.hectus.PostgreConnection;
 import net.hectus.Translation;
 import net.hectus.invade.commands.SlashPatch;
 import net.hectus.invade.commands.SlashStart;
+import net.hectus.invade.matches.Match;
+import net.hectus.invade.matches.MatchManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,7 +18,7 @@ import java.util.logging.Logger;
 public final class Invade extends JavaPlugin {
     public static Logger LOG;
     public static PostgreConnection database;
-    public static Match currentMatch;
+    private static MatchManager matchManager;
 
     @Override
     public void onEnable() {
@@ -47,13 +49,20 @@ public final class Invade extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            if (currentMatch != null) currentMatch.stop();
+            for (Match match : getMatchManager().getMatches()) {
+                match.stop();
+            }
             if (database != null) database.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         LOG.info("Successfully shut down all components of Invade's plugin!");
+    }
+
+    public static MatchManager getMatchManager() {
+        if (matchManager == null) matchManager = new MatchManager();
+        return matchManager;
     }
 
     /*

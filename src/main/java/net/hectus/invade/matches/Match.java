@@ -1,8 +1,10 @@
-package net.hectus.invade;
+package net.hectus.invade.matches;
 
 import com.marcpg.data.time.Time;
+import net.hectus.invade.Invade;
+import net.hectus.invade.PlayerData;
 import net.hectus.invade.tasks.ScoreboardTimer;
-import net.hectus.invade.util.Translation;
+import net.hectus.Translation;
 import net.kyori.adventure.title.Title;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -29,6 +31,16 @@ public class Match {
         for (Player player : players) {
             this.players.put(player, new PlayerData(player));
         }
+    }
+
+    public Match(List<Player> players) {
+        for (Player player : players) {
+            this.players.put(player, new PlayerData(player));
+        }
+    }
+
+    public void addPlayer(Player player) {
+        players.put(player, new PlayerData(player));
     }
 
     public void start() {

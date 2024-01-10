@@ -1,14 +1,22 @@
 package net.hectus.invade.matches;
 
 import org.bukkit.entity.Player;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MatchManager {
 
-    List<Match> matches = new ArrayList<>();
+    List<Match> matches = new ArrayList<>(); // Set instead of List ? - chimkenu
+
+    public void addMatch(Match match) {
+        matches.add(match);
+    }
+
+    public List<Match> getMatches() {
+        matches.removeIf(match -> match.state.equals(Match.State.END));
+        return matches;
+    }
 
     public void addPlayerToMatch(Player player){
         if(matches.isEmpty()){
