@@ -5,6 +5,7 @@ import net.hectus.invade.Match;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -16,7 +17,8 @@ import java.util.Objects;
 public class SlashStart implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        Invade.currentMatch = new Match(Objects.requireNonNull(Bukkit.getWorld("world")).getPlayers().toArray(Player[]::new));
+        World world = Objects.requireNonNull(Bukkit.getWorld("world"));
+        Invade.currentMatch = new Match(world, world.getPlayers().toArray(Player[]::new));
         sender.sendMessage(Component.text("Successfully started a match with all players in your current world!", NamedTextColor.GREEN));
         return true;
     }

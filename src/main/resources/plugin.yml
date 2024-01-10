@@ -28,3 +28,7 @@ commands:
   ## Starts an Invade game with all players on the server ##
   start:
     usage: /<command>
+
+  ## Generates a patch around a specific coordinate. Testing Command ##
+  patch:
+    usage: /<command> <radius>
