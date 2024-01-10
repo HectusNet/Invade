@@ -2,9 +2,9 @@ package net.hectus.invade;
 
 import net.hectus.PostgreConnection;
 import net.hectus.Translation;
+import net.hectus.invade.commands.SlashPatch;
 import net.hectus.invade.commands.SlashStart;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -33,12 +33,13 @@ public final class Invade extends JavaPlugin {
         try {
             saveDefaultConfig();
             ConfigurationSection pgConf = Objects.requireNonNull(getConfig().getConfigurationSection("postgresql"));
-            database = new PostgreConnection(Objects.requireNonNull(pgConf.getString("url")), pgConf.getString("user"), pgConf.getString("passwd"), pgConf.getString("table"));
+            if (pgConf.getBoolean("enabled")) database = new PostgreConnection(Objects.requireNonNull(pgConf.getString("url")), pgConf.getString("user"), pgConf.getString("passwd"), pgConf.getString("table"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         Objects.requireNonNull(getCommand("start")).setExecutor(new SlashStart());
+        Objects.requireNonNull(getCommand("patch")).setExecutor(new SlashPatch());
 
         LOG.info("Successfully started up Invade's plugin!");
     }
@@ -46,8 +47,8 @@ public final class Invade extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            currentMatch.stop();
-            database.closeConnection();
+            if (currentMatch != null) currentMatch.stop();
+            if (database != null) database.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
