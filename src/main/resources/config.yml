@@ -1,5 +1,5 @@
 postgresql:
-  enabled: true
+  enabled: false
   url: jdbc:postgresql://localhost:5432/hectus
   user: username
   passwd: password

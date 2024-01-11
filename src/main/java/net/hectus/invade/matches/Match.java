@@ -1,9 +1,16 @@
-package net.hectus.invade;
+package net.hectus.invade.matches;
 
 import com.marcpg.data.time.Time;
-import net.hectus.invade.tasks.ScoreboardTimer;
-import net.hectus.invade.util.Translation;
+import net.hectus.Translation;
+import net.hectus.invade.BlockRandomizer;
+import net.hectus.invade.Invade;
+import net.hectus.invade.PlayerData;
+import net.hectus.invade.ScoreboardTimer;
 import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +20,7 @@ import java.sql.SQLException;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import static net.hectus.invade.Invade.database;
@@ -20,15 +28,25 @@ import static net.hectus.invade.Invade.database;
 public class Match {
     public enum State { PRE, IN, END }
 
+    public static final Random RANDOM = new Random();
+
     public final HashMap<Player, PlayerData> players = new HashMap<>();
     public final ScoreboardTimer scoreboardTimer = new ScoreboardTimer(this, new Time(15, Time.Unit.MINUTES));
+    public final World world;
+    public final BlockRandomizer.BlockPalette palette;
     public State state = State.PRE;
     public Instant startingTime;
 
-    public Match(Player @NotNull ... players) {
+    public Match(World world, BlockRandomizer.BlockPalette palette, Player @NotNull ... players) {
+        this.world = world;
+        this.palette = palette;
+
         for (Player player : players) {
-            this.players.put(player, new PlayerData(player));
+            this.players.put(player, new PlayerData(player, this));
         }
+
+        generateFeatures(palette, new Location(Bukkit.getWorld("world"), -203, 98, 43), new Location(Bukkit.getWorld("world"), -149, 55, 5));
+        start();
     }
 
     public void start() {
@@ -54,6 +72,7 @@ public class Match {
     }
 
     public void stop(Player... winners) throws SQLException {
+        state = State.END;
         for (Player player : players.keySet()) {
             player.showTitle(Title.title(Translation.component(player.locale(), "match.end.title"), Translation.component(player.locale(), "match.end.time.subtitle")));
 
@@ -70,6 +89,22 @@ public class Match {
                 database.set(uuid, "loses", (int) database.get(uuid, "loses") + 1);
             }
             database.set(uuid, "playtime", new PGInterval(0, 0, 0, 0, 0, ((PGInterval) database.get(uuid, "playtime")).getWholeSeconds() + (Instant.now().getEpochSecond() - startingTime.getEpochSecond())));
+        }
+    }
+
+    public void generateFeatures(@NotNull BlockRandomizer.BlockPalette blockPalette, @NotNull Location c1, @NotNull Location c2) {
+        c1.getWorld().getPlayers().forEach(player -> player.showTitle(Title.title(Translation.component(player.locale(), "match.start.generation"), Translation.component(player.locale(), "match.start.generation.subtitle"))));
+        for (int i = 0; i < RANDOM.nextInt(10, 24); i++) {
+            Block targetBlock;
+            do {
+                targetBlock = new Location(
+                        c1.getWorld(),
+                        RANDOM.nextDouble(Math.min(c1.x(), c2.x()), Math.max(c1.x(), c2.x())),
+                        RANDOM.nextDouble(Math.min(c1.y(), c2.y()), Math.max(c1.y(), c2.y())),
+                        RANDOM.nextDouble(Math.min(c1.z(), c2.z()), Math.max(c1.z(), c2.z()))
+                ).getBlock();
+            } while (targetBlock.isEmpty());
+            BlockRandomizer.patch(targetBlock, RANDOM.nextInt(4, 20), blockPalette);
         }
     }
 }

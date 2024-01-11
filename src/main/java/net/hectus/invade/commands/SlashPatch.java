@@ -18,10 +18,8 @@ public class SlashPatch implements CommandExecutor {
         if (sender instanceof Player player) {
             Block targetBlock = player.getTargetBlockExact(128);
             if (targetBlock != null) {
-                long start = System.currentTimeMillis();
-                BlockRandomizer.patch(targetBlock, Integer.parseInt(args[0]), BlockRandomizer.BlockPalette.valueOf(args[1]));
-                long total = System.currentTimeMillis() - start;
-                player.sendMessage(Component.text("Done! Took a total of: " + total + "ms", NamedTextColor.GREEN));
+                long time = BlockRandomizer.patch(targetBlock, Integer.parseInt(args[0]), BlockRandomizer.BlockPalette.valueOf(args[1]));
+                player.sendMessage(Component.text("Done! Took a total of: " + time + "ms", NamedTextColor.GREEN));
             } else {
                 player.sendMessage(Component.text("You aren't looking at any block!", NamedTextColor.RED));
             }

@@ -1,47 +1,28 @@
 package net.hectus.invade.matches;
 
+import net.hectus.invade.PlayerData;
 import org.bukkit.entity.Player;
-import org.w3c.dom.stylesheets.LinkStyle;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MatchManager {
+    public static final List<Match> MATCHES = new ArrayList<>();
 
-    List<Match> matches = new ArrayList<>();
-
-    public void addPlayerToMatch(Player player){
-        if(matches.isEmpty()){
-            matches.add(new Match());
-        }
-        boolean done = false;
-        for(Match match : matches){
-            if(match.state.equals(Match.State.PRE)){
-                match.addPlayer(player);
-                done = true;
-            }
-        }
-        if(!done){
-            matches.add(new Match(player));
-        }
+    public static @Nullable Match getMatchByPlayer(Player player) {
+        return MATCHES.stream()
+                .filter(match -> match.players.containsKey(player))
+                .findFirst()
+                .orElse(null);
     }
 
-    public Match getMatchByPlayer(Player player){
-        for(Match match : matches){
-            if(match.players.containsKey(player)){
-                return match;
-            }
-        }
-        return null;
+    public static @Nullable PlayerData getPlayerData(Player player) {
+        Match match = getMatchByPlayer(player);
+        return match != null ? match.players.get(player) : null;
     }
 
-    public boolean isInMatch(Player player){
-        for(Match match : matches){
-            if(match.players.containsKey(player)){
-                return true;
-            }
-        }
-        return false;
+    public static boolean isInMatch(Player player) {
+        return getMatchByPlayer(player) != null;
     }
-
 }

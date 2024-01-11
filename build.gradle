@@ -19,7 +19,7 @@ idea {
 }
 
 group = 'net.hectus'
-version = '0.0.2'
+version = '0.0.3'
 
 repositories {
     mavenCentral()
@@ -36,7 +36,7 @@ repositories {
 dependencies {
     compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
     implementation "com.marcpg:libpg:0.0.3"
-    implementation "net.hectus:HectusUtilities:0.1"
+    implementation "net.hectus:HectusUtilities:0.1.2"
 }
 
 java {

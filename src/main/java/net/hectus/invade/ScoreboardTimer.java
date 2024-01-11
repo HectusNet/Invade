@@ -1,10 +1,8 @@
-package net.hectus.invade.tasks;
+package net.hectus.invade;
 
 import com.marcpg.data.time.Time;
 import net.hectus.Translation;
-import net.hectus.invade.Invade;
-import net.hectus.invade.Match;
-import net.hectus.invade.PlayerData;
+import net.hectus.invade.matches.Match;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -36,15 +34,22 @@ public class ScoreboardTimer {
                 Locale l = entry.getKey().locale();
 
                 Scoreboard scoreboard = manager.getNewScoreboard();
-                Objective objective = scoreboard.registerNewObjective("invade", Criteria.DUMMY, MiniMessage.miniMessage().deserialize("<gradient#8F00FF:#61C3CB>Invade"));
+                Objective objective = scoreboard.registerNewObjective("invade", Criteria.DUMMY, MiniMessage.miniMessage().deserialize("<gradient #8F00FF #61C3CB>Invade</gradient>"));
                 objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-                objective.getScore(GRAY + Translation.string(l, "scoreboard.time") + " " + PINK + time.getOneUnitFormatted()).setScore(5);
+                objective.getScore(Translation.string(l, "scoreboard.time") + " " + PURPLE + time.getOneUnitFormatted()).setScore(5);
                 objective.getScore(" ").setScore(4);
-                objective.getScore(GRAY + Translation.string(l, "scoreboard.task") + " " + BLUE + entry.getValue().currentTask()).setScore(3);
-                objective.getScore(GRAY + Translation.string(l, "scoreboard.points") + " " + BLUE + entry.getValue().points()).setScore(2);
+                objective.getScore(Translation.string(l, "scoreboard.task") + " " + BLUE + entry.getValue().currentTask()).setScore(3);
+                objective.getScore(Translation.string(l, "scoreboard.points") + " " + BLUE + entry.getValue().points()).setScore(2);
                 objective.getScore("  ").setScore(1);
-                objective.getScore(GRAY + Translation.string(l, "scoreboard.kills") + " " + RED + entry.getValue().kills()).setScore(0);
+                objective.getScore(Translation.string(l, "scoreboard.kills") + " " + RED + entry.getValue().kills()).setScore(0);
+
+                entry.getKey().setScoreboard(scoreboard);
+
+                if (entry.getValue().currentTask().isInvalid()) {
+                    entry.getValue().removePoints(1);
+                    entry.getValue().nextTask();
+                }
             }
         }, 0, 20);
     }

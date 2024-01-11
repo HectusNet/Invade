@@ -13,9 +13,11 @@ public class BlockRandomizer {
     public static final double CONSTANT_TERM = 1.0 / (0.4 * Math.sqrt(2 * Math.PI));
     public static final Random RANDOM = new Random();
 
-    public static void patch(@NotNull Block origin, int radius, @NotNull BlockPalette palette) {
+    public static long patch(@NotNull Block origin, int radius, @NotNull BlockPalette palette) {
         Location originLoc = origin.getLocation(); // No need to get this for every single block
         double radiusInverse = 1.0 / radius; // Multiplication faster than division
+
+        long start = System.currentTimeMillis();
 
         for (int x = -radius; x <= radius; x++) {
             for (int y = -radius; y <= radius; y++) {
@@ -30,6 +32,8 @@ public class BlockRandomizer {
                 }
             }
         }
+
+        return System.currentTimeMillis() - start;
     }
 
     private static double probability(double x) {
