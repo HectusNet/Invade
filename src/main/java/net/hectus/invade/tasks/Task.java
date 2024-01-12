@@ -1,7 +1,6 @@
 package net.hectus.invade.tasks;
 
 import net.hectus.invade.matches.Match;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -18,7 +17,7 @@ public abstract class Task {
 
     @ApiStatus.OverrideOnly
     public boolean isInvalid() {
-        return true;
+        return false;
     }
 
     @ApiStatus.OverrideOnly
@@ -28,7 +27,7 @@ public abstract class Task {
         return 1;
     }
 
-    public Component getTranslated(Locale locale) {
-        return Component.empty();
+    public String getTranslated(Locale locale) {
+        return "";
     }
 }

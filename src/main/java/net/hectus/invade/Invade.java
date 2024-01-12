@@ -4,9 +4,12 @@ import net.hectus.PostgreConnection;
 import net.hectus.Translation;
 import net.hectus.invade.commands.SlashPatch;
 import net.hectus.invade.commands.SlashStart;
+import net.hectus.invade.events.BasicPlayerEvents;
+import net.hectus.invade.events.TaskEvents;
 import net.hectus.invade.matches.Match;
 import net.hectus.invade.matches.MatchManager;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -17,7 +20,8 @@ import java.util.logging.Logger;
 
 public final class Invade extends JavaPlugin {
     public static Logger LOG;
-    public static PostgreConnection database;
+    public static PostgreConnection DATABASE;
+    public static FileConfiguration CONFIG;
 
     @Override
     public void onEnable() {
@@ -33,14 +37,18 @@ public final class Invade extends JavaPlugin {
 
         try {
             saveDefaultConfig();
-            ConfigurationSection pgConf = Objects.requireNonNull(getConfig().getConfigurationSection("postgresql"));
-            if (pgConf.getBoolean("enabled")) database = new PostgreConnection(Objects.requireNonNull(pgConf.getString("url")), pgConf.getString("user"), pgConf.getString("passwd"), pgConf.getString("table"));
+            CONFIG = getConfig();
+            ConfigurationSection pgConf = Objects.requireNonNull(CONFIG.getConfigurationSection("postgresql"));
+            if (pgConf.getBoolean("enabled")) DATABASE = new PostgreConnection(Objects.requireNonNull(pgConf.getString("url")), pgConf.getString("user"), pgConf.getString("passwd"), pgConf.getString("table"));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         Objects.requireNonNull(getCommand("start")).setExecutor(new SlashStart());
         Objects.requireNonNull(getCommand("patch")).setExecutor(new SlashPatch());
+
+        getServer().getPluginManager().registerEvents(new BasicPlayerEvents(), this);
+        getServer().getPluginManager().registerEvents(new TaskEvents(), this);
 
         LOG.info("Successfully started up Invade's plugin!");
     }
@@ -49,7 +57,7 @@ public final class Invade extends JavaPlugin {
     public void onDisable() {
         try {
             for (Match match : MatchManager.MATCHES) match.stop();
-            if (getConfig().getBoolean("postgresql.enabled")) database.closeConnection();
+            if (getConfig().getBoolean("postgresql.enabled")) DATABASE.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

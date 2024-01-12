@@ -3,7 +3,6 @@ package net.hectus.invade.tasks;
 import net.hectus.Translation;
 import net.hectus.invade.BlockRandomizer;
 import net.hectus.invade.matches.Match;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,17 +23,8 @@ public class CleaningTask extends Task {
         player.getInventory().addItem(new ItemStack(Material.IRON_HOE));
     }
 
-    public boolean addCleanedItems(int amount) {
-        return (blocksLeft -= amount) <= 0;
-    }
-
-    public boolean addCleanedItem() {
+    public boolean addCleanedBlock() {
         return blocksLeft-- <= 0;
-    }
-
-    @Override
-    public boolean isInvalid() {
-        return super.isInvalid();
     }
 
     @Override
@@ -50,7 +40,7 @@ public class CleaningTask extends Task {
     }
 
     @Override
-    public Component getTranslated(Locale locale) {
-        return Translation.component(locale, "task.cleaning.info", blocksLeft);
+    public String getTranslated(Locale locale) {
+        return Translation.string(locale, "task.cleaning.info", blocksLeft);
     }
 }

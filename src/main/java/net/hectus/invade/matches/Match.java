@@ -4,48 +4,59 @@ import com.marcpg.data.time.Time;
 import net.hectus.Translation;
 import net.hectus.invade.BlockRandomizer;
 import net.hectus.invade.Invade;
+import net.hectus.invade.InvadeTicks;
 import net.hectus.invade.PlayerData;
-import net.hectus.invade.ScoreboardTimer;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.util.PGInterval;
 
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import static net.hectus.invade.Invade.database;
+import static net.hectus.invade.Invade.DATABASE;
 
 public class Match {
     public enum State { PRE, IN, END }
 
     public static final Random RANDOM = new Random();
 
+    public final Set<Material> VALID_ITEMS;
     public final HashMap<Player, PlayerData> players = new HashMap<>();
-    public final ScoreboardTimer scoreboardTimer = new ScoreboardTimer(this, new Time(15, Time.Unit.MINUTES));
+    public final InvadeTicks invadeTicks = new InvadeTicks(this, new Time(15, Time.Unit.MINUTES));
     public final World world;
     public final BlockRandomizer.BlockPalette palette;
     public State state = State.PRE;
     public Instant startingTime;
 
-    public Match(World world, BlockRandomizer.BlockPalette palette, Player @NotNull ... players) {
+    public Match(@NotNull World world, BlockRandomizer.BlockPalette palette, Player @NotNull ... players) {
         this.world = world;
         this.palette = palette;
+
+        // Not the place to use a stream in, but I love streams, so I still did lol
+        VALID_ITEMS = world.getEntities().parallelStream()
+                .filter(ItemFrame.class::isInstance)
+                .map(ItemFrame.class::cast)
+                .map(ItemFrame::getItem)
+                .map(ItemStack::getType)
+                .collect(Collectors.toSet());
 
         for (Player player : players) {
             this.players.put(player, new PlayerData(player, this));
         }
 
-        generateFeatures(palette, new Location(Bukkit.getWorld("world"), -203, 98, 43), new Location(Bukkit.getWorld("world"), -149, 55, 5));
+        List<Integer> corner1 = Invade.CONFIG.getIntegerList("corner1");
+        List<Integer> corner2 = Invade.CONFIG.getIntegerList("corner2");
+        generateFeatures(palette, new Location(world, corner1.get(0), corner1.get(1), corner1.get(2)), new Location(world, corner2.get(0), corner2.get(1), corner2.get(2)));
         start();
     }
 
@@ -60,7 +71,7 @@ public class Match {
                         player.showTitle(Title.title(Translation.component(player.locale(), "match.start.title.start", timer), Translation.component(player.locale(), "match.start.title.start.subtitle")));
                     }
                     state = State.IN;
-                    scoreboardTimer.start();
+                    invadeTicks.start();
                     cancel();
                 }
                 for (Player player : players.keySet()) {
@@ -77,24 +88,24 @@ public class Match {
             player.showTitle(Title.title(Translation.component(player.locale(), "match.end.title"), Translation.component(player.locale(), "match.end.time.subtitle")));
 
             UUID uuid = player.getUniqueId();
-            if (!database.contains(uuid)) {
-                database.add(uuid, player.getName());
+            if (!DATABASE.contains(uuid)) {
+                DATABASE.add(uuid, player.getName());
             }
-            database.set(uuid, "matches", (int) database.get(uuid, "matches") + 1);
+            DATABASE.set(uuid, "matches", (int) DATABASE.get(uuid, "matches") + 1);
             if (List.of(winners).contains(player)) {
-                database.set(uuid, "wins", (int) database.get(uuid, "wins") + 1);
+                DATABASE.set(uuid, "wins", (int) DATABASE.get(uuid, "wins") + 1);
             } else if (winners.length == 0) {
-                database.set(uuid, "ties", (int) database.get(uuid, "ties") + 1);
+                DATABASE.set(uuid, "ties", (int) DATABASE.get(uuid, "ties") + 1);
             } else {
-                database.set(uuid, "loses", (int) database.get(uuid, "loses") + 1);
+                DATABASE.set(uuid, "loses", (int) DATABASE.get(uuid, "loses") + 1);
             }
-            database.set(uuid, "playtime", new PGInterval(0, 0, 0, 0, 0, ((PGInterval) database.get(uuid, "playtime")).getWholeSeconds() + (Instant.now().getEpochSecond() - startingTime.getEpochSecond())));
+            DATABASE.set(uuid, "playtime", new PGInterval(0, 0, 0, 0, 0, ((PGInterval) DATABASE.get(uuid, "playtime")).getWholeSeconds() + (Instant.now().getEpochSecond() - startingTime.getEpochSecond())));
         }
     }
 
     public void generateFeatures(@NotNull BlockRandomizer.BlockPalette blockPalette, @NotNull Location c1, @NotNull Location c2) {
         c1.getWorld().getPlayers().forEach(player -> player.showTitle(Title.title(Translation.component(player.locale(), "match.start.generation"), Translation.component(player.locale(), "match.start.generation.subtitle"))));
-        for (int i = 0; i < RANDOM.nextInt(10, 24); i++) {
+        for (int i = 0; i < RANDOM.nextInt(15, 30); i++) {
             Block targetBlock;
             do {
                 targetBlock = new Location(
@@ -104,7 +115,7 @@ public class Match {
                         RANDOM.nextDouble(Math.min(c1.z(), c2.z()), Math.max(c1.z(), c2.z()))
                 ).getBlock();
             } while (targetBlock.isEmpty());
-            BlockRandomizer.patch(targetBlock, RANDOM.nextInt(4, 20), blockPalette);
+            BlockRandomizer.patch(targetBlock, RANDOM.nextInt(8, 26), blockPalette);
         }
     }
 }

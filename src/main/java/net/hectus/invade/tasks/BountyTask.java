@@ -26,7 +26,7 @@ public class BountyTask extends Task {
     }
 
     @Override
-    public Component getTranslated(Locale locale) {
-        return Translation.component(locale, "task.bounty.info", target.getName());
+    public String getTranslated(Locale locale) {
+        return Translation.string(locale, "task.bounty.info", target.getName());
     }
 }

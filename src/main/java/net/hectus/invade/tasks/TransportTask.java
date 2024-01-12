@@ -4,7 +4,6 @@ import com.marcpg.text.Formatter;
 import net.hectus.Translation;
 import net.hectus.invade.Building;
 import net.hectus.invade.matches.Match;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -24,7 +23,7 @@ public class TransportTask extends ItemSearchTask {
     }
 
     @Override
-    public Component getTranslated(Locale locale) {
-        return Translation.component(locale, "task.transport.info", Formatter.toPascalCase(item.name()), destination.translate(locale));
+    public String getTranslated(Locale locale) {
+        return Translation.string(locale, "task.transport.info", Formatter.toPascalCase(item.name()), destination.translate(locale));
     }
 }

@@ -1,6 +1,7 @@
 package net.hectus.invade.events;
 
 import net.hectus.invade.Building;
+import net.hectus.invade.InvadeTicks;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.matches.MatchManager;
 import net.hectus.invade.tasks.CheckPointTask;
@@ -9,7 +10,6 @@ import net.hectus.invade.tasks.ItemSearchTask;
 import net.hectus.invade.tasks.TransportTask;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,9 +40,11 @@ public class TaskEvents implements Listener {
         PlayerData playerData = MatchManager.getPlayerData(event.getPlayer());
         if (playerData != null) {
             if (playerData.currentTask() instanceof CleaningTask task && playerData.match.palette.materials().containsKey(event.getBlock().getType())) {
-                if (task.addCleanedItem()) {
+                if (task.addCleanedBlock()) {
                     playerData.addPoints(task.points());
                     playerData.nextTask();
+                } else {
+                    InvadeTicks.updateMiniInfo(playerData);
                 }
                 event.getBlock().setType(Material.GRAY_CONCRETE);
                 return;
@@ -83,11 +85,11 @@ public class TaskEvents implements Listener {
         }
     }
 
-    public static boolean isInField(@NotNull Location loc, Building.@NotNull Cord cord1, Building.@NotNull Cord cord2) {
+    public static boolean isInField(@NotNull Location loc, @NotNull Building.Cord cord1, @NotNull Building.Cord cord2) {
         int minX = Math.min(cord1.x(), cord2.x());
         int maxX = Math.max(cord1.x(), cord2.x());
         int minZ = Math.min(cord1.z(), cord2.z());
         int maxZ = Math.max(cord1.z(), cord2.z());
-        return loc.x() > minX && loc.x() > maxX && loc.z() > minZ && loc.z() > maxZ;
+        return loc.x() >= minX && loc.x() <= maxX && loc.z() >= minZ && loc.z() <= maxZ;
     }
 }

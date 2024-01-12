@@ -4,3 +4,11 @@ postgresql:
   user: username
   passwd: password
   table: invade_playerdata
+corner1:
+  - 0
+  - 0
+  - 0
+corner2:
+  - 0
+  - 0
+  - 0

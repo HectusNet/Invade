@@ -3,7 +3,6 @@ package net.hectus.invade.tasks;
 import net.hectus.Translation;
 import net.hectus.invade.Building;
 import net.hectus.invade.matches.Match;
-import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.Locale;
@@ -22,7 +21,7 @@ public class CheckPointTask extends Task {
     }
 
     @Override
-    public Component getTranslated(Locale locale) {
-        return Translation.component(locale, "task.checkpoint.info", destination.translate(locale));
+    public String getTranslated(Locale locale) {
+        return Translation.string(locale, "task.checkpoint.info", destination.translate(locale));
     }
 }
