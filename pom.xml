@@ -40,21 +40,25 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.marcpg</groupId>
-      <artifactId>libpg</artifactId>
-      <version>0.0.3</version>
-    </dependency>
-    <dependency>
-      <groupId>net.hectus</groupId>
-      <artifactId>HectusUtilities</artifactId>
-      <version>0.1.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot</artifactId>
       <version>${remapped.version}</version>
       <scope>provided</scope>
       <classifier>remapped-mojang</classifier>
+    </dependency>
+    <dependency>
+      <groupId>com.marcpg</groupId>
+      <artifactId>libpg</artifactId>
+      <version>0.0.3</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/dependency/libpg-0.0.3.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>net.hectus</groupId>
+      <artifactId>HectusUtilities</artifactId>
+      <version>1.2</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/dependency/HectusUtilities-0.1.2.jar</systemPath>
     </dependency>
   </dependencies>
 
