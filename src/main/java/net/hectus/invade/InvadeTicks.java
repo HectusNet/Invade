@@ -40,7 +40,7 @@ public class InvadeTicks {
             for (HashMap.Entry<Player, PlayerData> entry : match.players.entrySet()) {
                 checkValid(entry.getValue());
                 updateScoreboard(this, entry.getValue());
-                updateMiniInfo(entry.getValue());
+                updateActionBar(entry.getValue());
             }
         }, 0, 20);
     }
@@ -52,7 +52,7 @@ public class InvadeTicks {
     public static void checkValid(@NotNull PlayerData playerData) {
         if (playerData.currentTask().isInvalid()) {
             playerData.removePoints(1);
-            playerData.nextTask();
+            playerData.nextTask(false);
         }
     }
 
@@ -63,9 +63,10 @@ public class InvadeTicks {
         Objective objective = scoreboard.registerNewObjective("invade", Criteria.DUMMY, MiniMessage.miniMessage().deserialize("<gradient #8F00FF #61C3CB>Invade</gradient>"));
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        objective.getScore(Translation.string(l, "scoreboard.time") + " " + PURPLE + ticker.time.getOneUnitFormatted()).setScore(5);
-        objective.getScore(" ").setScore(4);
-        objective.getScore(Translation.string(l, "scoreboard.task") + " " + BLUE + playerData.currentTask().getTranslated(l)).setScore(3);
+        objective.getScore(Translation.string(l, "scoreboard.time") + " " + PURPLE + ticker.time.getOneUnitFormatted()).setScore(6);
+        objective.getScore(" ").setScore(5);
+        objective.getScore(Translation.string(l, "scoreboard.task") + " " + BLUE + playerData.currentTask().getTranslated(l)).setScore(4);
+        objective.getScore(Translation.string(l, "scoreboard.completed_tasks") + " " + BLUE + playerData.completedTasks()).setScore(3);
         objective.getScore(Translation.string(l, "scoreboard.points") + " " + BLUE + playerData.points()).setScore(2);
         objective.getScore("  ").setScore(1);
         objective.getScore(Translation.string(l, "scoreboard.kills") + " " + RED + playerData.kills()).setScore(0);
@@ -73,14 +74,15 @@ public class InvadeTicks {
         playerData.player.setScoreboard(scoreboard);
     }
 
-    public static void updateMiniInfo(PlayerData playerData) {
+    public static void updateActionBar(PlayerData playerData) {
+        Locale l = playerData.player.locale();
         if (playerData.currentTask() instanceof CleaningTask cleaningTask) {
-            playerData.player.sendActionBar(Component.text(cleaningTask.blocksLeft + " blocks left to clean!", NamedTextColor.GRAY));
+            playerData.player.sendActionBar(Translation.component(l, "task.cleaning.actionbar.left", cleaningTask.blocksLeft).color(NamedTextColor.GRAY));
         } else if (playerData.currentTask() instanceof TransportTask transportTask && transportTask.foundItem) {
             if (TaskEvents.isInField(playerData.player.getLocation(), transportTask.destination.corner1, transportTask.destination.corner2)) {
-                playerData.player.sendActionBar(Component.text("Sneak to drop off the item!", NamedTextColor.GREEN, TextDecoration.UNDERLINED));
+                playerData.player.sendActionBar(Translation.component(l, "task.transport.actionbar.sneak").color(NamedTextColor.GREEN).decorate(TextDecoration.UNDERLINED));
             } else {
-                playerData.player.sendActionBar(Component.text("You found the item, now just drop it off at the destination!", NamedTextColor.GRAY));
+                playerData.player.sendActionBar(Translation.component(l, "task.transport.actionbar.found").color(NamedTextColor.GRAY));
             }
         }
     }

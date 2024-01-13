@@ -1,24 +1,50 @@
 package net.hectus.invade;
 
-import com.destroystokyo.paper.ParticleBuilder;
 import com.marcpg.util.Randomizer;
+import net.hectus.Translation;
 import net.hectus.invade.matches.Match;
 import net.hectus.invade.tasks.*;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
-import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 
 public class PlayerData {
+    public enum ArmorLevel {
+        LEATHER, CHAINMAIL, GOLDEN, IRON, DIAMOND, NETHERITE;
+
+        public void apply(@NotNull Player player) {
+            player.getInventory().setHelmet(new ItemStack(Material.valueOf(name() + "_HELMET")));
+            player.getInventory().setChestplate(new ItemStack(Material.valueOf(name() + "_CHESTPLATE")));
+            player.getInventory().setLeggings(new ItemStack(Material.valueOf(name() + "_LEGGINGS")));
+            player.getInventory().setBoots(new ItemStack(Material.valueOf(name() + "_BOOTS")));
+        }
+    }
+
+    public enum WeaponLevel {
+        WOODEN_AXE, WOODEN_SWORD, STONE_AXE, STONE_SWORD, GOLDEN_AXE, GOLDEN_SWORD, IRON_AXE, IRON_SWORD, DIAMOND_AXE, DIAMOND_SWORD, NETHERITE_AXE, NETHERITE_SWORD;
+
+        public void apply(@NotNull Player player) {
+            if (this != WOODEN_AXE)
+                player.getInventory().remove(Material.valueOf(ArmorLevel.values()[ordinal() - 1].name()));
+
+            player.getInventory().addItem(new ItemStack(Material.valueOf(name())));
+        }
+    }
+
     private static final Random RANDOM = new Random();
 
     public final Player player;
     public final Match match;
+    public ArmorLevel armor;
+    public WeaponLevel weapon;
     private Task currentTask;
+    private int completedTasks = 0;
     private int points = 0;
     private int kills = 0;
     private boolean dead;
@@ -26,11 +52,36 @@ public class PlayerData {
     public PlayerData(Player player, Match match) {
         this.player = player;
         this.match = match;
-        nextTask();
+        nextTask(false);
     }
 
-    public void nextTask() {
-        if (currentTask != null) currentTask.done();
+    public void nextTask(boolean completed) {
+        if (currentTask != null) {
+            currentTask.done();
+
+            if (completed) {
+                completeTask();
+                addPoints(currentTask.points());
+
+                player.sendMessage(Translation.component(player.locale(), "task.done.complete").color(NamedTextColor.GREEN));
+
+                if (Randomizer.boolByChance(66.66)) {
+                    if (weapon.ordinal() != 11) {
+                        weapon = WeaponLevel.values()[weapon.ordinal() + 1];
+                        weapon.apply(player);
+                        player.sendMessage(Translation.component(player.locale(), "equipment.weapon.upgrade").color(NamedTextColor.DARK_GREEN));
+                    }
+                } else {
+                    if (armor.ordinal() != 5) {
+                        armor = ArmorLevel.values()[armor.ordinal() + 1];
+                        armor.apply(player);
+                        player.sendMessage(Translation.component(player.locale(), "equipment.armor.upgrade").color(NamedTextColor.DARK_GREEN));
+                    }
+                }
+            } else {
+                player.sendMessage(Translation.component(player.locale(), "task.done.invalid").color(NamedTextColor.RED));
+            }
+        }
 
         currentTask = switch (RANDOM.nextInt(5)) {
             case 0 -> new BountyTask(match, player, Randomizer.fromCollection(match.players.entrySet().stream()
@@ -43,11 +94,18 @@ public class PlayerData {
             default -> new ItemSearchTask(match, player, Randomizer.fromCollection(match.VALID_ITEMS));
         };
         player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-        new ParticleBuilder(Particle.REDSTONE).location(player.getLocation()).color(0, 255, 0).count(15).receivers(player).spawn();
     }
 
     public Task currentTask() {
         return currentTask;
+    }
+
+    public void completeTask() {
+        completedTasks++;
+    }
+
+    public int completedTasks() {
+        return completedTasks;
     }
 
     public void addPoints(int points) {

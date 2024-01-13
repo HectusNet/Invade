@@ -19,7 +19,7 @@ idea {
 }
 
 group = 'net.hectus'
-version = '0.0.3'
+version = '0.0.4'
 
 repositories {
     mavenCentral()
@@ -34,9 +34,10 @@ repositories {
 }
 
 dependencies {
-    compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
-    implementation "com.marcpg:libpg:0.0.3"
-    implementation "net.hectus:HectusUtilities:0.1.2"
+    compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT" // Just Paper, Spigot and Bukkit
+    implementation "com.marcpg:libpg:0.0.3" // LibPG for some utility stuff
+    implementation "net.hectus:HectusUtilities:0.1.2" // HectusUtilities for the database and translations
+    implementation files("dependency/paper-1.20.4.jar")
 }
 
 java {

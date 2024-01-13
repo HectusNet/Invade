@@ -22,8 +22,7 @@ public class BasicPlayerEvents implements Listener {
                 if (killerData != null) {
                     if (killerData.currentTask() instanceof BountyTask task) {
                         if (task.target == event.getPlayer()) {
-                            killerData.addPoints(task.points());
-                            killerData.nextTask();
+                            killerData.nextTask(true);
                         }
                     }
                     killerData.addKill();

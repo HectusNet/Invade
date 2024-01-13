@@ -21,8 +21,4 @@ public class MatchManager {
         Match match = getMatchByPlayer(player);
         return match != null ? match.players.get(player) : null;
     }
-
-    public static boolean isInMatch(Player player) {
-        return getMatchByPlayer(player) != null;
-    }
 }

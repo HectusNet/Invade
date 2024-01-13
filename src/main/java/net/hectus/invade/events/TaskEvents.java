@@ -29,9 +29,12 @@ public class TaskEvents implements Listener {
 
         if (playerData.currentTask() instanceof CheckPointTask task) {
             if (isInField(event.getTo(), task.destination.corner1, task.destination.corner2)) {
-                playerData.addPoints(task.points());
-                playerData.nextTask();
+                playerData.nextTask(true);
             }
+        }
+
+        if (playerData.currentTask() instanceof TransportTask task && task.foundItem && isInField(event.getPlayer().getLocation(), task.destination.corner1, task.destination.corner2)) {
+            InvadeTicks.updateActionBar(playerData);
         }
     }
 
@@ -41,10 +44,9 @@ public class TaskEvents implements Listener {
         if (playerData != null) {
             if (playerData.currentTask() instanceof CleaningTask task && playerData.match.palette.materials().containsKey(event.getBlock().getType())) {
                 if (task.addCleanedBlock()) {
-                    playerData.addPoints(task.points());
-                    playerData.nextTask();
+                    playerData.nextTask(true);
                 } else {
-                    InvadeTicks.updateMiniInfo(playerData);
+                    InvadeTicks.updateActionBar(playerData);
                 }
                 event.getBlock().setType(Material.GRAY_CONCRETE);
                 return;
@@ -63,8 +65,7 @@ public class TaskEvents implements Listener {
                         if (task instanceof TransportTask transportTask) {
                             transportTask.foundItem = true;
                         } else {
-                            playerData.addPoints(task.points());
-                            playerData.nextTask();
+                            playerData.nextTask(true);
                         }
                     }
                 }
@@ -73,13 +74,12 @@ public class TaskEvents implements Listener {
     }
 
     @EventHandler
-    public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
+    public void onPlayerToggleSneak(@NotNull PlayerToggleSneakEvent event) {
         if (event.isSneaking()) {
             PlayerData playerData = MatchManager.getPlayerData(event.getPlayer());
             if (playerData != null) {
                 if (playerData.currentTask() instanceof TransportTask task && task.foundItem && isInField(event.getPlayer().getLocation(), task.destination.corner1, task.destination.corner2)) {
-                    playerData.addPoints(task.points());
-                    playerData.nextTask();
+                    playerData.nextTask(true);
                 }
             }
         }
