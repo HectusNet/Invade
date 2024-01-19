@@ -1,15 +1,16 @@
-package net.hectus.invade.tasks;
+package net.hectus.invade.tasks.hostile;
 
 import net.hectus.Translation;
 import net.hectus.invade.matches.Match;
+import net.hectus.invade.tasks.Task;
 import org.bukkit.entity.Player;
 
 import java.util.Locale;
 
-public class BountyTask extends Task {
+public class StealTask extends Task {
     public final Player target;
 
-    public BountyTask(Match match, Player player, Player target) {
+    public StealTask(Match match, Player player, Player target) {
         super(match, player);
         this.target = target;
     }
@@ -21,11 +22,11 @@ public class BountyTask extends Task {
 
     @Override
     public int points() {
-        return 12;
+        return 8;
     }
 
     @Override
     public String getTranslated(Locale locale) {
-        return Translation.string(locale, "task.bounty.info", target.getName());
+        return Translation.string(locale, "task.steal.info", target.getName());
     }
 }

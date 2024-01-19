@@ -6,7 +6,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <groupId>net.hectus.invade</groupId>
   <artifactId>Invade</artifactId>
-  <version>0.0.4</version>
+  <version>0.0.5</version>
   <packaging>jar</packaging>
 
   <description>Plugin for Hectus' game mode called Invade.</description>
@@ -14,7 +14,8 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <properties>
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
-    <remapped.version>1.20.4-R0.1-SNAPSHOT</remapped.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <minecraft.version>1.20.4-R0.1-SNAPSHOT</minecraft.version>
   </properties>
 
   <repositories>
@@ -26,19 +27,23 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
       <id>papermc-repo</id>
       <url>https://repo.papermc.io/repository/maven-public/</url>
     </repository>
+    <repository>
+      <id>marcpg-repo</id>
+      <url>https://marcpg.com/repo/</url>
+    </repository>
   </repositories>
   
   <dependencies>
     <dependency>
       <groupId>io.papermc.paper</groupId>
       <artifactId>paper-api</artifactId>
-      <version>1.20.4-R0.1-SNAPSHOT</version>
+      <version>${minecraft.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot</artifactId>
-      <version>${remapped.version}</version>
+      <version>${minecraft.version}</version>
       <scope>provided</scope>
       <classifier>remapped-mojang</classifier>
     </dependency>
@@ -46,15 +51,11 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
       <groupId>com.marcpg</groupId>
       <artifactId>libpg</artifactId>
       <version>0.0.3</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/dependency/libpg-0.0.3.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>net.hectus</groupId>
       <artifactId>HectusUtilities</artifactId>
-      <version>1.2</version>
-      <scope>system</scope>
-      <systemPath>${project.basedir}/dependency/HectusUtilities-0.1.2.jar</systemPath>
+      <version>0.2.0</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -78,9 +79,9 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             </goals>
             <id>remap-obf</id>
             <configuration>
-              <srgIn>org.spigotmc:minecraft-server:${remapped.version}:txt:maps-mojang</srgIn>
+              <srgIn>org.spigotmc:minecraft-server:${minecraft.version}:txt:maps-mojang</srgIn>
               <reverse>true</reverse>
-              <remappedDependencies>org.spigotmc:spigot:${remapped.version}:jar:remapped-mojang</remappedDependencies>
+              <remappedDependencies>org.spigotmc:spigot:${minecraft.version}:jar:remapped-mojang</remappedDependencies>
               <remappedArtifactAttached>true</remappedArtifactAttached>
               <remappedClassifierName>remapped-obf</remappedClassifierName>
             </configuration>
@@ -93,8 +94,8 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <id>remap-spigot</id>
             <configuration>
               <inputFile>${project.build.directory}/${project.artifactId}-${project.version}-remapped-obf.jar</inputFile>
-              <srgIn>org.spigotmc:minecraft-server:${remapped.version}:csrg:maps-spigot</srgIn>
-              <remappedDependencies>org.spigotmc:spigot:${remapped.version}:jar:remapped-obf</remappedDependencies>
+              <srgIn>org.spigotmc:minecraft-server:${minecraft.version}:csrg:maps-spigot</srgIn>
+              <remappedDependencies>org.spigotmc:spigot:${minecraft.version}:jar:remapped-obf</remappedDependencies>
             </configuration>
           </execution>
         </executions>
@@ -111,7 +112,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.4</version>
+        <version>3.2.4</version> <!-- Use the latest version available -->
         <executions>
           <execution>
             <phase>package</phase>
@@ -131,7 +132,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             <manifest>
               <addClasspath>true</addClasspath>
               <classpathPrefix>lib/</classpathPrefix>
-              <mainClass>com.spellboundmc.spellbuild.SpellBuild</mainClass>
+              <mainClass>net.hectus.invade.Invade</mainClass>
             </manifest>
           </archive>
         </configuration>

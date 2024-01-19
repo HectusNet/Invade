@@ -3,8 +3,22 @@ package net.hectus.invade;
 import com.marcpg.util.Randomizer;
 import net.hectus.Translation;
 import net.hectus.invade.matches.Match;
-import net.hectus.invade.tasks.*;
+import net.hectus.invade.tasks.Task;
+import net.hectus.invade.tasks.hostile.BountyTask;
+import net.hectus.invade.tasks.hostile.HuntingTask;
+import net.hectus.invade.tasks.hostile.StealTask;
+import net.hectus.invade.tasks.item.ArtifactTask;
+import net.hectus.invade.tasks.item.ItemSearchTask;
+import net.hectus.invade.tasks.item.TransportTask;
+import net.hectus.invade.tasks.movement.CheckPointTask;
+import net.hectus.invade.tasks.movement.EscortTask;
+import net.hectus.invade.tasks.repair.CleaningTask;
+import net.hectus.invade.tasks.repair.RepairTask;
+import net.hectus.invade.tasks.repair.TokenCollectTask;
+import net.kyori.adventure.bossbar.BossBar;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -31,7 +45,7 @@ public class PlayerData {
 
         public void apply(@NotNull Player player) {
             if (this != WOODEN_AXE)
-                player.getInventory().remove(Material.valueOf(ArmorLevel.values()[ordinal() - 1].name()));
+                player.getInventory().remove(Material.valueOf(WeaponLevel.values()[ordinal() - 1].name()));
 
             player.getInventory().addItem(new ItemStack(Material.valueOf(name())));
         }
@@ -49,9 +63,25 @@ public class PlayerData {
     private int kills = 0;
     private boolean dead;
 
+    public Building.Cord mapMarker;
+    public BossBar compass;
+
     public PlayerData(Player player, Match match) {
         this.player = player;
         this.match = match;
+
+        armor = ArmorLevel.LEATHER;
+        armor.apply(player);
+        weapon = WeaponLevel.WOODEN_AXE;
+        weapon.apply(player);
+
+        ItemStack skipItem = new ItemStack(Material.TOTEM_OF_UNDYING, 3);
+        skipItem.editMeta(meta -> meta.displayName(Component.text("Skip Task", NamedTextColor.RED)));
+        player.getInventory().setItem(8, skipItem);
+
+        compass = BossBar.bossBar(Component.text(""), 1.0f, BossBar.Color.BLUE, BossBar.Overlay.PROGRESS);
+        compass.addViewer(player);
+
         nextTask(false);
     }
 
@@ -60,10 +90,10 @@ public class PlayerData {
             currentTask.done();
 
             if (completed) {
-                completeTask();
                 addPoints(currentTask.points());
+                completeTask();
 
-                player.sendMessage(Translation.component(player.locale(), "task.done.complete").color(NamedTextColor.GREEN));
+                player.getInventory().addItem(new ItemStack(Material.BREAD, 3));
 
                 if (Randomizer.boolByChance(66.66)) {
                     if (weapon.ordinal() != 11) {
@@ -78,12 +108,14 @@ public class PlayerData {
                         player.sendMessage(Translation.component(player.locale(), "equipment.armor.upgrade").color(NamedTextColor.DARK_GREEN));
                     }
                 }
+
+                player.sendMessage(Translation.component(player.locale(), "task.done.complete").color(NamedTextColor.GREEN));
             } else {
                 player.sendMessage(Translation.component(player.locale(), "task.done.invalid").color(NamedTextColor.RED));
             }
         }
 
-        currentTask = switch (RANDOM.nextInt(5)) {
+        currentTask = switch (RANDOM.nextInt(match.graceTime ? 1 : 0, 11)) {
             case 0 -> new BountyTask(match, player, Randomizer.fromCollection(match.players.entrySet().stream()
                     .filter(targetEntry -> targetEntry.getKey() != player && !targetEntry.getValue().isDead())
                     .map(Map.Entry::getKey)
@@ -91,7 +123,14 @@ public class PlayerData {
             case 1 -> new CheckPointTask(match, player, Randomizer.fromArray(Building.values()));
             case 2 -> new CleaningTask(match, player, match.palette, RANDOM.nextInt(25, 80));
             case 3 -> new TransportTask(match, player, Randomizer.fromCollection(match.VALID_ITEMS), Randomizer.fromCollection(Building.destinations()));
-            default -> new ItemSearchTask(match, player, Randomizer.fromCollection(match.VALID_ITEMS));
+            case 4 -> new TokenCollectTask(match, player, RANDOM.nextInt(10, 21));
+            case 5 -> new HuntingTask(match, player, RANDOM.nextInt(2, 7));
+            case 6 -> new StealTask(match, player, Randomizer.fromCollection(match.world.getPlayers().stream().filter(target -> target.getGameMode() == GameMode.SURVIVAL && target != player).toList()));
+            case 7 -> new ArtifactTask(match, player, Randomizer.fromArray(ArtifactTask.Artifact.values()));
+            case 8 -> new EscortTask(match, player, Randomizer.fromArray(Building.values()), Randomizer.fromArray(Building.values()).middle().toLocation(match.world));
+            case 9 -> new RepairTask(match, player, Randomizer.fromArray(RepairTask.Repairable.values()), this);
+            case 10 -> new ItemSearchTask(match, player, Randomizer.fromCollection(match.VALID_ITEMS));
+            default -> throw new IllegalStateException("Unexpected value: " + RANDOM.nextInt(match.graceTime ? 1 : 0, 6));
         };
         player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
     }

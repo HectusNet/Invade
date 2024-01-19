@@ -40,27 +40,27 @@ public class BlockRandomizer {
         return Math.pow(Math.E, -0.5 * Math.pow(x * 2.5, 2)) * CONSTANT_TERM;
     }
 
-    public record BlockPalette(Map<Material, Integer> materials) {
-        public static final BlockPalette SCULK = new BlockPalette(Map.of(
+    public record BlockPalette(String name, Map<Material, Integer> materials) {
+        public static final BlockPalette SCULK = new BlockPalette("sculk", Map.of(
                 Material.SCULK, 65,
                 Material.BLACK_CONCRETE, 5,
                 Material.CRACKED_DEEPSLATE_BRICKS, 15,
                 Material.CRACKED_DEEPSLATE_TILES, 15
         ));
 
-        public static final BlockPalette SLIME = new BlockPalette(Map.of(
+        public static final BlockPalette SLIME = new BlockPalette("slime", Map.of(
                 Material.SLIME_BLOCK, 90,
                 Material.LIME_CONCRETE, 10
         ));
 
-        public static final BlockPalette NETHER = new BlockPalette(Map.of(
+        public static final BlockPalette NETHER = new BlockPalette("nether", Map.of(
                 Material.NETHERRACK, 65,
                 Material.NETHER_WART_BLOCK, 5,
                 Material.NETHER_BRICKS, 15,
                 Material.MAGMA_BLOCK, 15
         ));
 
-        public static final BlockPalette OVERWORLD = new BlockPalette(Map.of(
+        public static final BlockPalette OVERWORLD = new BlockPalette("overworld", Map.of(
                 Material.GRASS_BLOCK, 50,
                 Material.MOSS_BLOCK, 25,
                 Material.AZALEA_LEAVES, 10,
@@ -68,7 +68,7 @@ public class BlockRandomizer {
                 Material.STONE, 5
         ));
 
-        public static final BlockPalette END = new BlockPalette(Map.of(
+        public static final BlockPalette END = new BlockPalette("end", Map.of(
                 Material.END_STONE, 65,
                 Material.END_STONE_BRICKS, 15,
                 Material.PURPUR_BLOCK, 15,

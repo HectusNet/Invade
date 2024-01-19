@@ -2,17 +2,13 @@ package net.hectus.invade.matches;
 
 import com.marcpg.data.time.Time;
 import net.hectus.Translation;
-import net.hectus.invade.BlockRandomizer;
-import net.hectus.invade.Invade;
-import net.hectus.invade.InvadeTicks;
-import net.hectus.invade.PlayerData;
+import net.hectus.invade.*;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.entity.ItemFrame;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +33,7 @@ public class Match {
     public final BlockRandomizer.BlockPalette palette;
     public State state = State.PRE;
     public Instant startingTime;
+    public boolean graceTime = true;
 
     public Match(@NotNull World world, BlockRandomizer.BlockPalette palette, Player @NotNull ... players) {
         this.world = world;
@@ -70,6 +67,11 @@ public class Match {
                     for (Player player : players.keySet()) {
                         player.showTitle(Title.title(Translation.component(player.locale(), "match.start.title.start", timer), Translation.component(player.locale(), "match.start.title.start.subtitle")));
                     }
+
+                    List<Building> buildings = new ArrayList<>(List.of(Building.values()));
+                    Collections.shuffle(buildings);
+                    buildings.subList(0, 8).forEach(building -> spawnMobs(building.middle().toLocation(world)));
+
                     state = State.IN;
                     invadeTicks.start();
                     cancel();
@@ -79,7 +81,7 @@ public class Match {
                 }
                 timer--;
             }
-        }.runTaskTimer(Invade.getPlugin(Invade.class), 0, 20);
+        }.runTaskTimer(Invade.PLUGIN, 0, 20);
     }
 
     public void stop(Player... winners) throws SQLException {
@@ -105,7 +107,7 @@ public class Match {
 
     public void generateFeatures(@NotNull BlockRandomizer.BlockPalette blockPalette, @NotNull Location c1, @NotNull Location c2) {
         c1.getWorld().getPlayers().forEach(player -> player.showTitle(Title.title(Translation.component(player.locale(), "match.start.generation"), Translation.component(player.locale(), "match.start.generation.subtitle"))));
-        for (int i = 0; i < RANDOM.nextInt(15, 30); i++) {
+        for (int i = 0; i < RANDOM.nextInt(22, 36); i++) {
             Block targetBlock;
             do {
                 targetBlock = new Location(
@@ -115,7 +117,40 @@ public class Match {
                         RANDOM.nextDouble(Math.min(c1.z(), c2.z()), Math.max(c1.z(), c2.z()))
                 ).getBlock();
             } while (targetBlock.isEmpty());
-            BlockRandomizer.patch(targetBlock, RANDOM.nextInt(8, 26), blockPalette);
+            BlockRandomizer.patch(targetBlock, RANDOM.nextInt(14, 29), blockPalette);
+        }
+    }
+
+    public void spawnMobs(Location location) {
+        switch (palette.name()) {
+            case "sculk" -> {
+                world.spawn(location, Warden.class);
+                world.spawn(location, Bat.class);
+            }
+            case "slime" -> {
+                world.spawn(location, Slime.class);
+                world.spawn(location, Slime.class);
+                world.spawn(location, Slime.class);
+                world.spawn(location, Slime.class);
+            }
+            case "nether" -> {
+                world.spawn(location, PigZombie.class);
+                world.spawn(location, WitherSkeleton.class);
+                world.spawn(location, MagmaCube.class);
+                world.spawn(location, Blaze.class);
+            }
+            case "overworld" -> {
+                world.spawn(location, Skeleton.class);
+                world.spawn(location, Zombie.class);
+                world.spawn(location, Spider.class);
+                world.spawn(location, Vindicator.class);
+            }
+            case "end" -> {
+                world.spawn(location, Enderman.class);
+                world.spawn(location, Enderman.class);
+                world.spawn(location, Enderman.class);
+                world.spawn(location, Silverfish.class);
+            }
         }
     }
 }

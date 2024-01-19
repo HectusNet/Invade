@@ -1,4 +1,4 @@
-package net.hectus.invade.tasks;
+package net.hectus.invade.tasks.item;
 
 import com.marcpg.text.Formatter;
 import net.hectus.Translation;
@@ -19,7 +19,7 @@ public class TransportTask extends ItemSearchTask {
 
     @Override
     public int points() {
-        return 6;
+        return 8;
     }
 
     @Override

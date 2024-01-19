@@ -1,8 +1,9 @@
-package net.hectus.invade.tasks;
+package net.hectus.invade.tasks.repair;
 
 import net.hectus.Translation;
 import net.hectus.invade.BlockRandomizer;
 import net.hectus.invade.matches.Match;
+import net.hectus.invade.tasks.Task;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -24,7 +25,7 @@ public class CleaningTask extends Task {
     }
 
     public boolean addCleanedBlock() {
-        return blocksLeft-- <= 0;
+        return blocksLeft-- <= 1; // 1 because otherwise it will be one block late, as it detects the block break before adding the points
     }
 
     @Override

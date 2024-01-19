@@ -1,8 +1,9 @@
-package net.hectus.invade.tasks;
+package net.hectus.invade.tasks.item;
 
 import com.marcpg.text.Formatter;
 import net.hectus.Translation;
 import net.hectus.invade.matches.Match;
+import net.hectus.invade.tasks.Task;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
@@ -15,6 +16,11 @@ public class ItemSearchTask extends Task {
     public ItemSearchTask(Match match, Player player, Material item) {
         super(match, player);
         this.item = item;
+    }
+
+    @Override
+    public int points() {
+        return 3;
     }
 
     @Override

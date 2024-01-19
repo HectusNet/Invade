@@ -10,6 +10,7 @@ import net.hectus.invade.matches.Match;
 import net.hectus.invade.matches.MatchManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -20,12 +21,14 @@ import java.util.logging.Logger;
 
 public final class Invade extends JavaPlugin {
     public static Logger LOG;
-    public static PostgreConnection DATABASE;
+    public static Plugin PLUGIN;
     public static FileConfiguration CONFIG;
+    public static PostgreConnection DATABASE;
 
     @Override
     public void onEnable() {
         LOG = getLogger();
+        PLUGIN = this;
 
         try {
             File langDirectory = new File(getDataFolder(), "lang");
@@ -36,15 +39,17 @@ public final class Invade extends JavaPlugin {
         }
 
         try {
+            Class.forName("org.postgresql.Driver");
             saveDefaultConfig();
             CONFIG = getConfig();
             ConfigurationSection pgConf = Objects.requireNonNull(CONFIG.getConfigurationSection("postgresql"));
             if (pgConf.getBoolean("enabled")) DATABASE = new PostgreConnection(Objects.requireNonNull(pgConf.getString("url")), pgConf.getString("user"), pgConf.getString("passwd"), pgConf.getString("table"));
-        } catch (SQLException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
         Objects.requireNonNull(getCommand("start")).setExecutor(new SlashStart());
+        Objects.requireNonNull(getCommand("skip")).setExecutor(new SlashStart());
         Objects.requireNonNull(getCommand("patch")).setExecutor(new SlashPatch());
 
         getServer().getPluginManager().registerEvents(new BasicPlayerEvents(), this);

@@ -27,7 +27,14 @@ prefix: Invade
 commands:
   ## Starts an Invade game with all players on the server ##
   start:
+    usage: /<command> <theme>
+    description: Starts a match with all players in your world.
+
+  ## Skips your current task, if you're stuck or too ass ##
+  skip:
     usage: /<command>
+    aliases: next
+    description: Skips your current task, which also gives you -5 points as a punishment.
 
   ## Generates a patch around a specific coordinate. Testing Command ##
   patch:
