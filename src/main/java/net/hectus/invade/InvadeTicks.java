@@ -2,33 +2,32 @@ package net.hectus.invade;
 
 import com.marcpg.data.time.Time;
 import com.marcpg.util.Randomizer;
-import net.hectus.Translation;
 import net.hectus.invade.events.TaskEvents;
 import net.hectus.invade.matches.Match;
-import net.hectus.invade.tasks.repair.CleaningTask;
-import net.hectus.invade.tasks.repair.TokenCollectTask;
 import net.hectus.invade.tasks.item.TransportTask;
+import net.hectus.invade.tasks.repair.CleaningTask;
+import net.hectus.invade.tasks.hostile.TokenCollectTask;
+import net.hectus.lang.Translation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.*;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Locale;
 
 import static com.marcpg.color.McFormat.*;
 
 public class InvadeTicks {
-    public static final String COMPASS = "S  ·  ◈  ·  ◈  ·  ◈  ·  SW  ·  ◈  ·  ◈  ·  ◈  ·  W  ·  ◈  ·  ◈  ·  ◈  ·  NW  ·  ◈  ·  ◈  ·  ◈  ·  N  ·  ◈  ·  ◈  ·  ◈  ·  NE  ·  ◈  ·  ◈  ·  ◈  ·  E  ·  ◈  ·  ◈  ·  ◈  ·  SE  ·  ◈  ·  ◈  ·  ◈  ·  S  ·  ◈  ·  ◈  ·  ◈  ·  SW  ·  ◈  ·  ◈  ·  ◈  ·  W  ·  ◈  ·  ◈  ·  ◈  ·  NW  ·  ◈  ·  ◈  ·  ◈  ·  N  ·  ◈  ·  ◈  ·  ◈  ·  NE  ·  ◈  ·  ◈  ·  ◈  ·  E  ·  ◈  ·  ◈  ·  ◈  ·  SE  ·  ◈  ·  ◈  ·  ◈  ·  ";
-
-    public final Time time;
     private static final ScoreboardManager manager = Bukkit.getScoreboardManager();
     private final Match match;
+    public final Time time;
     private BukkitTask task;
     private boolean second;
 
@@ -44,11 +43,11 @@ public class InvadeTicks {
                 time.decrement();
                 if (time.get() <= 0) stop();
                 if (time.get() == 780 && time.get() != 900) match.graceTime = false;
-                if (time.get() % 60 == 0) match.spawnMobs(Randomizer.fromArray(Building.values()).middle().toLocation(match.world));
+                if (time.get() % 30 == 0) match.spawnMobs(Randomizer.fromArray(Building.values()).middle().toLocation(match.world));
             }
 
             for (HashMap.Entry<Player, PlayerData> entry : match.players.entrySet()) {
-                checkValid(entry.getValue());
+                updateTasks(entry.getValue());
                 updateScoreboard(this, entry.getValue());
                 updateActionBar(entry.getValue());
             }
@@ -57,9 +56,15 @@ public class InvadeTicks {
 
     public void stop() {
         task.cancel();
+        try {
+            match.stop(match.alivePlayers.toArray(Player[]::new));
+        } catch (SQLException e) {
+            Invade.LOG.severe("Couldn't save game results into invade playerdata!");
+        }
     }
 
-    public static void checkValid(@NotNull PlayerData playerData) {
+    public static void updateTasks(@NotNull PlayerData playerData) {
+        playerData.currentTask().tick();
         if (playerData.currentTask().isInvalid()) {
             playerData.removePoints(1);
             playerData.nextTask(false);
@@ -99,10 +104,22 @@ public class InvadeTicks {
         }
     }
 
+    public static final String COMPASS_TEMPLATE = "S  ·  -  ·  -  ·  -  ·  SW  ·  -  ·  -  ·  -  ·  W  ·  -  ·  -  ·  -  ·  NW  ·  -  ·  -  ·  -  ·  N  ·  -  ·  -  ·  -  ·  NE  ·  -  ·  -  ·  -  ·  E  ·  -  ·  -  ·  -  ·  SE  ·  -  ·  -  ·  -  ·  S  ·  -  ·  -  ·  -  ·  SW  ·  -  ·  -  ·  -  ·  W  ·  -  ·  -  ·  -  ·  NW  ·  -  ·  -  ·  -  ·  N  ·  -  ·  -  ·  -  ·  NE  ·  -  ·  -  ·  -  ·  E  ·  -  ·  -  ·  -  ·  SE  ·  -  ·  -  ·  -  ·  "; // ◈
+
     public static void updateCompass(@NotNull PlayerData playerData) {
-        int chars = COMPASS.length();
-        int index = (int) (normalize(playerData.player.getYaw()) * chars / 720.0f + chars * 0.5f);
-        playerData.compass.name(Component.text(COMPASS.substring(index - 25, index + 25)));
+        String compass = COMPASS_TEMPLATE;
+        if (playerData.mapMarker != null) {
+            Vector playerToMarker = playerData.mapMarker.toLocation(playerData.match.world).toVector().subtract(playerData.player.getLocation().toVector()).normalize();
+            int markerIndex = index((float) Math.toDegrees(Math.atan2(-playerToMarker.getX(), playerToMarker.getZ())), COMPASS_TEMPLATE.length());
+            compass = compass.substring(0, markerIndex - 3) + "░▒▓█▓▒░" + compass.substring(markerIndex + 4);
+        }
+
+        int index = index(playerData.player.getYaw(), compass.length());
+        playerData.compass.name(Component.text(compass.substring(index - 25, index + 25)));
+    }
+
+    public static int index(float yaw, int chars) {
+        return (int) (normalize(yaw) * chars / 720.0f + chars * 0.5f);
     }
 
     private static float normalize(float yaw) {

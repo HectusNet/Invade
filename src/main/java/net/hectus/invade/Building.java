@@ -1,17 +1,13 @@
 package net.hectus.invade;
 
-import net.hectus.Translation;
-import org.bukkit.Location;
-import org.bukkit.World;
+import net.hectus.lang.Translation;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-@SuppressWarnings("unused")
 public enum Building {
     // TODO: Check all these
     NAJOTON(new Cord(844, 0, 557), new Cord(821, 0, 533), true),
@@ -34,7 +30,7 @@ public enum Building {
     MOONBUCKS(new Cord(949, 0, 587), new Cord(960, 0, 573), true),
     NO_NAME(new Cord(959, 0, 560), new Cord(948, 0, 570), true),
     MC_ONALDS(new Cord(944, 0, 596), new Cord(958, 0, 610), true),
-    ARP(new Cord(927, 0, 609), new Cord(0, 941, 596), true),
+    ARP(new Cord(927, 0, 609), new Cord(941, 0, 596), true),
     DAIRI_HI(new Cord(926, 0, 612), new Cord(941, 0, 629), true),
     WIL(new Cord(944, 0, 629), new Cord(959, 0, 613), true),
     DISCO(new Cord(926, 0, 639), new Cord(904, 0, 655), true),
@@ -43,18 +39,6 @@ public enum Building {
     WC2(new Cord(974, 0, 589), new Cord(1000, 0, 601), false),
     LIBRARY(new Cord(1009, 0, 627), new Cord(1036, 0, 585), true),
     STAFF_ONLY(new Cord(996, 0, 631), new Cord(1036, 0, 652), false);
-
-    public record Cord(@Range(from = 816, to = 1049) int x, @Range(from = 0, to = 1) int floor, @Range(from = 528, to = 655) int z) {
-        @Contract(value = "_ -> new", pure = true)
-        public @NotNull Location toLocation(@NotNull World world) {
-            return new Location(world, x, 24, z);
-        }
-
-        @Contract("_ -> new")
-        public static @NotNull Cord fromLocation(@NotNull Location location) {
-            return new Cord(location.getBlockX(), 0, location.getBlockZ());
-        }
-    }
 
     public final Cord corner1;
     public final Cord corner2;
@@ -66,13 +50,13 @@ public enum Building {
         this.destination = destination;
     }
 
-    public String translate(Locale locale) {
-        return Translation.string(locale, "building.floor" + (corner1.floor + 1) + "." + name().toLowerCase());
+    public String getTranslated(Locale locale) {
+        return Translation.string(locale, "building.floor" + (corner1.floor() + 1) + "." + name().toLowerCase());
     }
 
     @Contract(" -> new")
     public @NotNull Cord middle() {
-        return new Cord((corner1.x + corner2.x) / 2, corner1.floor, (corner1.z + corner2.z) / 2);
+        return new Cord((corner1.x() + corner2.x()) / 2, corner1.floor(), (corner1.z() + corner2.z()) / 2);
     }
 
     public static List<Building> destinations() {

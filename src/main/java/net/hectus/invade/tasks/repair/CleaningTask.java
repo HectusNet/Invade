@@ -1,9 +1,10 @@
 package net.hectus.invade.tasks.repair;
 
-import net.hectus.Translation;
 import net.hectus.invade.BlockRandomizer;
+import net.hectus.invade.PlayerData;
 import net.hectus.invade.matches.Match;
 import net.hectus.invade.tasks.Task;
+import net.hectus.lang.Translation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -14,8 +15,8 @@ public class CleaningTask extends Task {
     public final BlockRandomizer.BlockPalette palette;
     public int blocksLeft;
 
-    public CleaningTask(Match match, Player player, BlockRandomizer.BlockPalette palette, int blocksLeft) {
-        super(match, player);
+    public CleaningTask(Match match, Player player, PlayerData playerData, BlockRandomizer.BlockPalette palette, int blocksLeft) {
+        super(match, player, playerData);
         this.palette = palette;
         this.blocksLeft = blocksLeft;
 

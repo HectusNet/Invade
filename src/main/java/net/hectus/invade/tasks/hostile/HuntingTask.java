@@ -1,8 +1,9 @@
 package net.hectus.invade.tasks.hostile;
 
-import net.hectus.Translation;
+import net.hectus.invade.PlayerData;
 import net.hectus.invade.matches.Match;
 import net.hectus.invade.tasks.Task;
+import net.hectus.lang.Translation;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -12,8 +13,8 @@ public class HuntingTask extends Task {
     public final int required;
     public int killed = 0;
 
-    public HuntingTask(Match match, Player player, int required) {
-        super(match, player);
+    public HuntingTask(Match match, Player player, PlayerData playerData, int required) {
+        super(match, player, playerData);
         this.required = required;
     }
 

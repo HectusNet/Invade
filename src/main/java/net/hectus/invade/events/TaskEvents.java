@@ -1,6 +1,6 @@
 package net.hectus.invade.events;
 
-import net.hectus.invade.Building;
+import net.hectus.invade.Cord;
 import net.hectus.invade.Invade;
 import net.hectus.invade.InvadeTicks;
 import net.hectus.invade.PlayerData;
@@ -11,7 +11,7 @@ import net.hectus.invade.tasks.item.TransportTask;
 import net.hectus.invade.tasks.movement.CheckPointTask;
 import net.hectus.invade.tasks.movement.EscortTask;
 import net.hectus.invade.tasks.repair.CleaningTask;
-import net.hectus.invade.tasks.repair.TokenCollectTask;
+import net.hectus.invade.tasks.hostile.TokenCollectTask;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -71,11 +71,10 @@ public class TaskEvents implements Listener {
     public void onEntityDamageByEntity(@NotNull EntityDamageByEntityEvent event) {
         if (event.getEntity() instanceof ItemFrame itemFrame) {
             event.setCancelled(true);
-
             if (event.getDamager() instanceof Player player) {
                 PlayerData playerData = MatchManager.getPlayerData(player);
                 if (playerData != null) {
-                    if (playerData.currentTask() instanceof ItemSearchTask task && !task.foundItem && task.item == itemFrame.getItem().getType()) {
+                    if (playerData.currentTask() instanceof ItemSearchTask task && task.item == itemFrame.getItem().getType()) {
                         if (task instanceof TransportTask transportTask) {
                             transportTask.foundItem = true;
                         } else {
@@ -137,7 +136,7 @@ public class TaskEvents implements Listener {
         }
     }
 
-    public static boolean isInField(@NotNull Location loc, @NotNull Building.Cord cord1, @NotNull Building.Cord cord2) {
+    public static boolean isInField(@NotNull Location loc, @NotNull Cord cord1, @NotNull Cord cord2) {
         int minX = Math.min(cord1.x(), cord2.x());
         int maxX = Math.max(cord1.x(), cord2.x());
         int minZ = Math.min(cord1.z(), cord2.z());

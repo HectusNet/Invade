@@ -1,8 +1,11 @@
 package net.hectus.invade.tasks.hostile;
 
-import net.hectus.Translation;
+import net.hectus.invade.Cord;
+import net.hectus.invade.PlayerData;
 import net.hectus.invade.matches.Match;
 import net.hectus.invade.tasks.Task;
+import net.hectus.lang.Translation;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,14 +14,19 @@ import java.util.Locale;
 public class BountyTask extends Task {
     public final Player target;
 
-    public BountyTask(Match match, Player player, @NotNull Player target) {
-        super(match, player);
+    public BountyTask(Match match, Player player, PlayerData playerData, @NotNull Player target) {
+        super(match, player, playerData);
         this.target = target;
     }
 
     @Override
     public boolean isInvalid() {
-        return match.players.get(target).isDead();
+        return target.getGameMode() != GameMode.SURVIVAL;
+    }
+
+    @Override
+    public void tick() {
+        playerData.mapMarker = Cord.fromLocation(target.getLocation());
     }
 
     @Override

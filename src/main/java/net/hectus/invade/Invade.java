@@ -1,13 +1,13 @@
 package net.hectus.invade;
 
-import net.hectus.PostgreConnection;
-import net.hectus.Translation;
 import net.hectus.invade.commands.SlashPatch;
 import net.hectus.invade.commands.SlashStart;
 import net.hectus.invade.events.BasicPlayerEvents;
 import net.hectus.invade.events.TaskEvents;
 import net.hectus.invade.matches.Match;
 import net.hectus.invade.matches.MatchManager;
+import net.hectus.lang.Translation;
+import net.hectus.sql.PostgreConnection;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;

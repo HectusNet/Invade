@@ -1,10 +1,10 @@
 package net.hectus.invade.game_events;
 
 import com.marcpg.util.Randomizer;
-import net.hectus.Translation;
 import net.hectus.invade.Building;
 import net.hectus.invade.Invade;
 import net.hectus.invade.matches.Match;
+import net.hectus.lang.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -27,15 +27,14 @@ public class ChaosEvent extends Event {
     public final List<Entity> entities = new ArrayList<>();
     public final List<EntityType> entityTypes = new ArrayList<>();
 
-    protected ChaosEvent(Match match, int mobs) {
+    public ChaosEvent(Match match, int mobs) {
         super(match);
-
         for (int i = 0; i < mobs; i++) {
             entityTypes.add(Randomizer.fromCollection(ENTITY_TYPES));
         }
     }
 
-    protected ChaosEvent(Match match, EntityType... mobs) {
+    public ChaosEvent(Match match, EntityType... mobs) {
         super(match);
         entityTypes.addAll(List.of(mobs));
     }
@@ -56,12 +55,7 @@ public class ChaosEvent extends Event {
     }
 
     @Override
-    public String getTitleTranslated(Locale locale) {
+    public String getTranslated(Locale locale) {
         return Translation.string(locale, "event.chaos.info");
-    }
-
-    @Override
-    public String getDescriptionTranslated(Locale locale) {
-        return Translation.string(locale, "event.chaos.description");
     }
 }

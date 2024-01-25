@@ -2,7 +2,6 @@ package net.hectus.invade.events;
 
 import com.marcpg.data.time.Time;
 import com.marcpg.util.Randomizer;
-import net.hectus.Translation;
 import net.hectus.invade.Building;
 import net.hectus.invade.Invade;
 import net.hectus.invade.InvadeTicks;
@@ -11,6 +10,7 @@ import net.hectus.invade.matches.Match;
 import net.hectus.invade.matches.MatchManager;
 import net.hectus.invade.tasks.hostile.BountyTask;
 import net.hectus.invade.tasks.hostile.HuntingTask;
+import net.hectus.lang.Translation;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -25,14 +25,16 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.sql.SQLException;
 import java.util.Objects;
 
 public class BasicPlayerEvents implements Listener {
     @EventHandler
-    public void onPlayerDeath(@NotNull PlayerDeathEvent event) {
+    public void onPlayerDeath(@NotNull PlayerDeathEvent event) throws SQLException {
         PlayerData playerData = MatchManager.getPlayerData(event.getPlayer());
         if (playerData != null) {
             playerData.nowDead();
+            playerData.match.alivePlayers.removeIf(p -> p.getUniqueId() == event.getPlayer().getUniqueId());
 
             Player killer = event.getPlayer().getKiller();
             if (killer != null) {
@@ -55,6 +57,10 @@ public class BasicPlayerEvents implements Listener {
                 event.getPlayer().teleport(Randomizer.fromArray(Building.values()).middle().toLocation(event.getPlayer().getWorld()));
                 event.getPlayer().setGameMode(GameMode.SPECTATOR);
             }, 10);
+
+            if (playerData.match.alivePlayers.size() == 1) {
+                playerData.match.stop(playerData.match.alivePlayers.get(0));
+            }
         }
     }
 

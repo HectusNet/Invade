@@ -1,12 +1,12 @@
 package net.hectus.invade;
 
 import com.marcpg.util.Randomizer;
-import net.hectus.Translation;
 import net.hectus.invade.matches.Match;
 import net.hectus.invade.tasks.Task;
 import net.hectus.invade.tasks.hostile.BountyTask;
 import net.hectus.invade.tasks.hostile.HuntingTask;
 import net.hectus.invade.tasks.hostile.StealTask;
+import net.hectus.invade.tasks.hostile.TokenCollectTask;
 import net.hectus.invade.tasks.item.ArtifactTask;
 import net.hectus.invade.tasks.item.ItemSearchTask;
 import net.hectus.invade.tasks.item.TransportTask;
@@ -14,7 +14,7 @@ import net.hectus.invade.tasks.movement.CheckPointTask;
 import net.hectus.invade.tasks.movement.EscortTask;
 import net.hectus.invade.tasks.repair.CleaningTask;
 import net.hectus.invade.tasks.repair.RepairTask;
-import net.hectus.invade.tasks.repair.TokenCollectTask;
+import net.hectus.lang.Translation;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -63,7 +63,7 @@ public class PlayerData {
     private int kills = 0;
     private boolean dead;
 
-    public Building.Cord mapMarker;
+    public Cord mapMarker;
     public BossBar compass;
 
     public PlayerData(Player player, Match match) {
@@ -108,29 +108,29 @@ public class PlayerData {
                         player.sendMessage(Translation.component(player.locale(), "equipment.armor.upgrade").color(NamedTextColor.DARK_GREEN));
                     }
                 }
-
                 player.sendMessage(Translation.component(player.locale(), "task.done.complete").color(NamedTextColor.GREEN));
             } else {
                 player.sendMessage(Translation.component(player.locale(), "task.done.invalid").color(NamedTextColor.RED));
             }
         }
 
-        currentTask = switch (RANDOM.nextInt(match.graceTime ? 1 : 0, 11)) {
-            case 0 -> new BountyTask(match, player, Randomizer.fromCollection(match.players.entrySet().stream()
+        currentTask = switch (RANDOM.nextInt(match.graceTime ? 3 : 0, 22)) {
+            case 0, 1 -> new BountyTask(match, player, this, Randomizer.fromCollection(match.players.entrySet().stream()
                     .filter(targetEntry -> targetEntry.getKey() != player && !targetEntry.getValue().isDead())
                     .map(Map.Entry::getKey)
                     .toList()));
-            case 1 -> new CheckPointTask(match, player, Randomizer.fromArray(Building.values()));
-            case 2 -> new CleaningTask(match, player, match.palette, RANDOM.nextInt(25, 80));
-            case 3 -> new TransportTask(match, player, Randomizer.fromCollection(match.VALID_ITEMS), Randomizer.fromCollection(Building.destinations()));
-            case 4 -> new TokenCollectTask(match, player, RANDOM.nextInt(10, 21));
-            case 5 -> new HuntingTask(match, player, RANDOM.nextInt(2, 7));
-            case 6 -> new StealTask(match, player, Randomizer.fromCollection(match.world.getPlayers().stream().filter(target -> target.getGameMode() == GameMode.SURVIVAL && target != player).toList()));
-            case 7 -> new ArtifactTask(match, player, Randomizer.fromArray(ArtifactTask.Artifact.values()));
-            case 8 -> new EscortTask(match, player, Randomizer.fromArray(Building.values()), Randomizer.fromArray(Building.values()).middle().toLocation(match.world));
-            case 9 -> new RepairTask(match, player, Randomizer.fromArray(RepairTask.Repairable.values()), this);
-            case 10 -> new ItemSearchTask(match, player, Randomizer.fromCollection(match.VALID_ITEMS));
-            default -> throw new IllegalStateException("Unexpected value: " + RANDOM.nextInt(match.graceTime ? 1 : 0, 6));
+            case 2 -> new HuntingTask(match, player, this, RANDOM.nextInt(2, 7));
+            case 3, 4, 5 -> new StealTask(match, player, this, Randomizer.fromCollection(match.world.getPlayers().stream().filter(target -> target.getGameMode() == GameMode.SURVIVAL && target != player).toList()));
+            case 6, 7, 8 -> new TransportTask(match, player, this, Randomizer.fromCollection(match.VALID_ITEMS), Randomizer.fromCollection(Building.destinations()));
+            case 9, 10 -> new CheckPointTask(match, player, this, Randomizer.fromArray(Building.values()));
+            case 11 -> new EscortTask(match, player, this, Randomizer.fromArray(Building.values()), Randomizer.fromArray(Building.values()).middle().toLocation(match.world));
+            case 12, 13 -> new CleaningTask(match, player, this, match.palette, RANDOM.nextInt(25, 80));
+            case 14 -> new TokenCollectTask(match, player, this, RANDOM.nextInt(10, 21));
+            // EXCLUDED
+            case 15 -> new ArtifactTask(match, player, this, Randomizer.fromArray(ArtifactTask.Artifact.values()));
+            case 16, 17 -> new RepairTask(match, player, this, Randomizer.fromArray(RepairTask.Repairable.values()));
+            // EXCLUDED
+            default -> new ItemSearchTask(match, player, this, Randomizer.fromCollection(match.VALID_ITEMS));
         };
         player.playSound(player, Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
     }

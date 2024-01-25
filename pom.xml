@@ -6,7 +6,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <groupId>net.hectus.invade</groupId>
   <artifactId>Invade</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.6</version>
   <packaging>jar</packaging>
 
   <description>Plugin for Hectus' game mode called Invade.</description>
@@ -55,7 +55,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <dependency>
       <groupId>net.hectus</groupId>
       <artifactId>HectusUtilities</artifactId>
-      <version>0.2.0</version>
+      <version>0.3.0</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -136,41 +136,6 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
             </manifest>
           </archive>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-install-plugin</artifactId>
-        <version>3.1.1</version>
-        <executions>
-          <execution>
-            <id>install-libpg</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <file>${project.basedir}/dependency/libpg-0.0.3.jar</file>
-              <groupId>com.marcpg</groupId>
-              <artifactId>libpg</artifactId>
-              <version>0.0.3</version>
-              <packaging>jar</packaging>
-            </configuration>
-          </execution>
-          <execution>
-            <id>install-hectus-utilities</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>install-file</goal>
-            </goals>
-            <configuration>
-              <file>${project.basedir}/dependency/HectusUtilities-0.1.2.jar</file>
-              <groupId>net.hectus</groupId>
-              <artifactId>HectusUtilities</artifactId>
-              <version>1.2</version>
-              <packaging>jar</packaging>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
     <resources>

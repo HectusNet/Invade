@@ -1,8 +1,9 @@
-package net.hectus.invade.tasks.repair;
+package net.hectus.invade.tasks.hostile;
 
-import net.hectus.Translation;
+import net.hectus.invade.PlayerData;
 import net.hectus.invade.matches.Match;
 import net.hectus.invade.tasks.Task;
+import net.hectus.lang.Translation;
 import org.bukkit.entity.Player;
 
 import java.util.Locale;
@@ -11,8 +12,8 @@ public class TokenCollectTask extends Task {
     public final int tokenRequirement;
     public int tokens;
 
-    public TokenCollectTask(Match match, Player player, int tokenRequirement) {
-        super(match, player);
+    public TokenCollectTask(Match match, Player player, PlayerData playerData, int tokenRequirement) {
+        super(match, player, playerData);
         this.tokenRequirement = tokenRequirement;
     }
 

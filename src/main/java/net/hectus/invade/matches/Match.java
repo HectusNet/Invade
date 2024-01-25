@@ -1,8 +1,8 @@
 package net.hectus.invade.matches;
 
 import com.marcpg.data.time.Time;
-import net.hectus.Translation;
 import net.hectus.invade.*;
+import net.hectus.lang.Translation;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,6 +28,7 @@ public class Match {
 
     public final Set<Material> VALID_ITEMS;
     public final HashMap<Player, PlayerData> players = new HashMap<>();
+    public final List<Player> alivePlayers = new ArrayList<>();
     public final InvadeTicks invadeTicks = new InvadeTicks(this, new Time(15, Time.Unit.MINUTES));
     public final World world;
     public final BlockRandomizer.BlockPalette palette;
@@ -70,7 +71,7 @@ public class Match {
 
                     List<Building> buildings = new ArrayList<>(List.of(Building.values()));
                     Collections.shuffle(buildings);
-                    buildings.subList(0, 8).forEach(building -> spawnMobs(building.middle().toLocation(world)));
+                    buildings.subList(0, 12).forEach(building -> spawnMobs(building.middle().toLocation(world)));
 
                     state = State.IN;
                     invadeTicks.start();
@@ -88,6 +89,7 @@ public class Match {
         state = State.END;
         for (Player player : players.keySet()) {
             player.showTitle(Title.title(Translation.component(player.locale(), "match.end.title"), Translation.component(player.locale(), "match.end.time.subtitle")));
+            player.activeBossBars().forEach(player::hideBossBar);
 
             UUID uuid = player.getUniqueId();
             if (!DATABASE.contains(uuid)) {
@@ -103,6 +105,8 @@ public class Match {
             }
             DATABASE.set(uuid, "playtime", new PGInterval(0, 0, 0, 0, 0, ((PGInterval) DATABASE.get(uuid, "playtime")).getWholeSeconds() + (Instant.now().getEpochSecond() - startingTime.getEpochSecond())));
         }
+
+        MatchManager.MATCHES.remove(this);
     }
 
     public void generateFeatures(@NotNull BlockRandomizer.BlockPalette blockPalette, @NotNull Location c1, @NotNull Location c2) {

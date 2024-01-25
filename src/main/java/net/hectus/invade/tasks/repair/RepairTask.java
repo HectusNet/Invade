@@ -1,10 +1,11 @@
 package net.hectus.invade.tasks.repair;
 
-import net.hectus.Translation;
 import net.hectus.invade.Building;
+import net.hectus.invade.Cord;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.matches.Match;
 import net.hectus.invade.tasks.Task;
+import net.hectus.lang.Translation;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,14 +19,13 @@ public class RepairTask extends Task { // TODO: Code this with map marker, etc.
         public String getTranslated(Locale locale) {
             return Translation.string(locale, "task.repair.repairable." + name().toLowerCase());
         }
-
     }
 
-    public final Building.Cord location;
+    public final Cord location;
     public final Repairable broken;
 
-    public RepairTask(Match match, Player player, @NotNull Repairable broken, @NotNull PlayerData playerData) {
-        super(match, player);
+    public RepairTask(Match match, Player player, PlayerData playerData, @NotNull Repairable broken) {
+        super(match, player, playerData);
         this.broken = broken;
 
         location = switch (broken) {

@@ -1,21 +1,16 @@
 package net.hectus.invade.game_events;
 
 import net.hectus.invade.matches.Match;
+import net.hectus.lang.Translatable;
 
-import java.util.Locale;
-
-public abstract class Event {
+public abstract class Event extends Translatable {
     public final Match match;
 
-    protected Event(Match match) {
+    public Event(Match match) {
         this.match = match;
     }
 
     public void done() {}
 
     public abstract void run();
-
-    public abstract String getTitleTranslated(Locale locale);
-
-    public abstract String getDescriptionTranslated(Locale locale);
 }

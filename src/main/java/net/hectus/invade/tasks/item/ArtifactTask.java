@@ -1,10 +1,12 @@
 package net.hectus.invade.tasks.item;
 
-import net.hectus.Translation;
-import net.hectus.invade.Building.Cord;
+import net.hectus.invade.Cord;
+import net.hectus.invade.PlayerData;
 import net.hectus.invade.matches.Match;
 import net.hectus.invade.tasks.Task;
+import net.hectus.lang.Translation;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -17,13 +19,18 @@ public class ArtifactTask extends Task { // TODO: Add artifacts with cords and s
         Artifact(Cord cord) {
             this.cord = cord;
         }
+
+        public String getTranslated(Locale locale) {
+            return Translation.string(locale, "task.artifact.artifact." + name().toLowerCase());
+        }
     }
 
     public final Artifact artifact;
 
-    public ArtifactTask(Match match, Player player, Artifact artifact) {
-        super(match, player);
+    public ArtifactTask(Match match, Player player, PlayerData playerData, @NotNull Artifact artifact) {
+        super(match, player, playerData);
         this.artifact = artifact;
+        this.playerData.mapMarker = artifact.cord;
     }
 
     @Override
@@ -33,6 +40,6 @@ public class ArtifactTask extends Task { // TODO: Add artifacts with cords and s
 
     @Override
     public String getTranslated(Locale locale) {
-        return Translation.string(locale, "task.artifact.info", Arti);
+        return Translation.string(locale, "task.artifact.info", artifact.getTranslated(locale));
     }
 }
