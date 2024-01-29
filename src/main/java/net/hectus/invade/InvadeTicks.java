@@ -4,12 +4,13 @@ import com.marcpg.data.time.Time;
 import com.marcpg.util.Randomizer;
 import net.hectus.invade.events.TaskEvents;
 import net.hectus.invade.matches.Match;
+import net.hectus.invade.tasks.hostile.TokenCollectTask;
 import net.hectus.invade.tasks.item.TransportTask;
 import net.hectus.invade.tasks.repair.CleaningTask;
-import net.hectus.invade.tasks.hostile.TokenCollectTask;
 import net.hectus.lang.Translation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -30,6 +31,7 @@ public class InvadeTicks {
     public final Time time;
     private BukkitTask task;
     private boolean second;
+    private static final Component SCOREBOARD_TITLE = Component.text().append(Component.text("I", TextColor.color(143, 0, 255))).append(Component.text("n", TextColor.color(134, 39, 245))).append(Component.text("v", TextColor.color(125, 78, 234))).append(Component.text("a", TextColor.color(115, 117, 224))).append(Component.text("d", TextColor.color(106, 156, 213))).append(Component.text("e", TextColor.color(97, 195, 203))).append(Component.text("-", TextColor.color(176, 140, 144))).append(Component.text("-", TextColor.color(255, 85, 85))).build();
 
     public InvadeTicks(Match match, Time time) {
         this.match = match;
@@ -43,7 +45,8 @@ public class InvadeTicks {
                 time.decrement();
                 if (time.get() <= 0) stop();
                 if (time.get() == 780 && time.get() != 900) match.graceTime = false;
-                if (time.get() % 30 == 0) match.spawnMobs(Randomizer.fromArray(Building.values()).middle().toLocation(match.world));
+                if (time.get() % 30 == 0)
+                    match.spawnMobs(Randomizer.fromArray(Building.values()).middle().toLocation(match.world));
             }
 
             for (HashMap.Entry<Player, PlayerData> entry : match.players.entrySet()) {
@@ -57,7 +60,7 @@ public class InvadeTicks {
     public void stop() {
         task.cancel();
         try {
-            match.stop(match.alivePlayers.toArray(Player[]::new));
+            match.stop(match.players.keySet().toArray(new Player[0]));
         } catch (SQLException e) {
             Invade.LOG.severe("Couldn't save game results into invade playerdata!");
         }
@@ -75,7 +78,7 @@ public class InvadeTicks {
         Locale l = playerData.player.locale();
 
         Scoreboard scoreboard = manager.getNewScoreboard();
-        Objective objective = scoreboard.registerNewObjective("invade", Criteria.DUMMY, Component.text("§x§8§F§0§0§F§F&lI§x§8§6§2§7§F§5&ln§x§7§D§4§E§E§A&lv§x§7§3§7§5§E§0&la§x§6§A§9§C§D§5&ld§x§6§1§C§3§C§B&le" + RED + " Beta"));
+        Objective objective = scoreboard.registerNewObjective("invade", Criteria.DUMMY, SCOREBOARD_TITLE);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         objective.getScore(Translation.string(l, "scoreboard.time") + " " + PURPLE + ticker.time.getOneUnitFormatted()).setScore(6);
@@ -111,7 +114,7 @@ public class InvadeTicks {
         if (playerData.mapMarker != null) {
             Vector playerToMarker = playerData.mapMarker.toLocation(playerData.match.world).toVector().subtract(playerData.player.getLocation().toVector()).normalize();
             int markerIndex = index((float) Math.toDegrees(Math.atan2(-playerToMarker.getX(), playerToMarker.getZ())), COMPASS_TEMPLATE.length());
-            compass = compass.substring(0, markerIndex - 3) + "░▒▓█▓▒░" + compass.substring(markerIndex + 4);
+            compass = compass.substring(0, markerIndex - 4) + GREEN + "->░█░<-" + GREEN + compass.substring(markerIndex + 5);
         }
 
         int index = index(playerData.player.getYaw(), compass.length());

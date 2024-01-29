@@ -28,8 +28,7 @@ public class Match {
 
     public final Set<Material> VALID_ITEMS;
     public final HashMap<Player, PlayerData> players = new HashMap<>();
-    public final List<Player> alivePlayers = new ArrayList<>();
-    public final InvadeTicks invadeTicks = new InvadeTicks(this, new Time(15, Time.Unit.MINUTES));
+    public final InvadeTicks invadeTicks = new InvadeTicks(this, new Time(10, Time.Unit.MINUTES));
     public final World world;
     public final BlockRandomizer.BlockPalette palette;
     public State state = State.PRE;
@@ -52,9 +51,7 @@ public class Match {
             this.players.put(player, new PlayerData(player, this));
         }
 
-        List<Integer> corner1 = Invade.CONFIG.getIntegerList("corner1");
-        List<Integer> corner2 = Invade.CONFIG.getIntegerList("corner2");
-        generateFeatures(palette, new Location(world, corner1.get(0), corner1.get(1), corner1.get(2)), new Location(world, corner2.get(0), corner2.get(1), corner2.get(2)));
+        generateFeatures(palette, new Location(world, 816, 22, 528), new Location(world, 1049, 42, 655));
         start();
     }
 
@@ -116,9 +113,9 @@ public class Match {
             do {
                 targetBlock = new Location(
                         c1.getWorld(),
-                        RANDOM.nextDouble(Math.min(c1.x(), c2.x()), Math.max(c1.x(), c2.x())),
-                        RANDOM.nextDouble(Math.min(c1.y(), c2.y()), Math.max(c1.y(), c2.y())),
-                        RANDOM.nextDouble(Math.min(c1.z(), c2.z()), Math.max(c1.z(), c2.z()))
+                        RANDOM.nextDouble(c1.x(), c2.x()),
+                        RANDOM.nextDouble(c1.y(), c2.y()),
+                        RANDOM.nextDouble(c1.z(), c2.z())
                 ).getBlock();
             } while (targetBlock.isEmpty());
             BlockRandomizer.patch(targetBlock, RANDOM.nextInt(14, 29), blockPalette);

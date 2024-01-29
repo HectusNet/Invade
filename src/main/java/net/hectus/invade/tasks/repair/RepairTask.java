@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class RepairTask extends Task { // TODO: Code this with map marker, etc.
     public enum Repairable {
-        VENDING_MACHINE, SECURITY_SYSTEM, LIGHT, TOILET;
+        VENDING_MACHINE, SECURITY_SYSTEM, LIGHT, TOILET, DUCT_CLEANING, DUCT_VENTILATOR;
 
         public String getTranslated(Locale locale) {
             return Translation.string(locale, "task.repair.repairable." + name().toLowerCase());
@@ -29,8 +29,8 @@ public class RepairTask extends Task { // TODO: Code this with map marker, etc.
         this.broken = broken;
 
         location = switch (broken) {
-            case VENDING_MACHINE, SECURITY_SYSTEM, LIGHT -> null;
-            case TOILET -> new Random().nextBoolean() ? Building.WC1.middle() : Building.WC2.middle();
+            case VENDING_MACHINE, SECURITY_SYSTEM, LIGHT, DUCT_CLEANING, DUCT_VENTILATOR -> null;
+            case TOILET -> new Random().nextBoolean() ? Building.WEST_SIDE_TOILETS.middle() : Building.EAST_SIDE_TOILETS.middle();
         };
         playerData.mapMarker = location;
     }

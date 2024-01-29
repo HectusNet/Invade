@@ -25,7 +25,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
 import java.util.Random;
 
 public class PlayerData {
@@ -61,7 +60,6 @@ public class PlayerData {
     private int completedTasks = 0;
     private int points = 0;
     private int kills = 0;
-    private boolean dead;
 
     public Cord mapMarker;
     public BossBar compass;
@@ -115,9 +113,8 @@ public class PlayerData {
         }
 
         currentTask = switch (RANDOM.nextInt(match.graceTime ? 3 : 0, 22)) {
-            case 0, 1 -> new BountyTask(match, player, this, Randomizer.fromCollection(match.players.entrySet().stream()
-                    .filter(targetEntry -> targetEntry.getKey() != player && !targetEntry.getValue().isDead())
-                    .map(Map.Entry::getKey)
+            case 0, 1 -> new BountyTask(match, player, this, Randomizer.fromCollection(match.players.keySet().stream()
+                    .filter(playerData -> playerData != player)
                     .toList()));
             case 2 -> new HuntingTask(match, player, this, RANDOM.nextInt(2, 7));
             case 3, 4, 5 -> new StealTask(match, player, this, Randomizer.fromCollection(match.world.getPlayers().stream().filter(target -> target.getGameMode() == GameMode.SURVIVAL && target != player).toList()));
@@ -165,13 +162,5 @@ public class PlayerData {
 
     public int kills() {
         return kills;
-    }
-
-    public boolean isDead() {
-        return dead;
-    }
-
-    public void nowDead() {
-        dead = true;
     }
 }

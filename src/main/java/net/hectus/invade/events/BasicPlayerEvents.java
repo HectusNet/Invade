@@ -25,17 +25,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.SQLException;
 import java.util.Objects;
 
 public class BasicPlayerEvents implements Listener {
     @EventHandler
-    public void onPlayerDeath(@NotNull PlayerDeathEvent event) throws SQLException {
+    public void onPlayerDeath(@NotNull PlayerDeathEvent event) {
         PlayerData playerData = MatchManager.getPlayerData(event.getPlayer());
         if (playerData != null) {
-            playerData.nowDead();
-            playerData.match.alivePlayers.removeIf(p -> p.getUniqueId() == event.getPlayer().getUniqueId());
-
             Player killer = event.getPlayer().getKiller();
             if (killer != null) {
                 PlayerData killerData = MatchManager.getPlayerData(killer);
@@ -58,9 +54,12 @@ public class BasicPlayerEvents implements Listener {
                 event.getPlayer().setGameMode(GameMode.SPECTATOR);
             }, 10);
 
-            if (playerData.match.alivePlayers.size() == 1) {
-                playerData.match.stop(playerData.match.alivePlayers.get(0));
-            }
+            playerData.match.players.remove(event.getPlayer());
+            Bukkit.getScheduler().runTaskLater(Invade.PLUGIN, () -> {
+                if (playerData.match.players.size() <= 1) {
+                    playerData.match.invadeTicks.stop();
+                }
+            }, 50);
         }
     }
 

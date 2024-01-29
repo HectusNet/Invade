@@ -43,7 +43,7 @@ public final class Invade extends JavaPlugin {
             saveDefaultConfig();
             CONFIG = getConfig();
             ConfigurationSection pgConf = Objects.requireNonNull(CONFIG.getConfigurationSection("postgresql"));
-            if (pgConf.getBoolean("enabled")) DATABASE = new PostgreConnection(Objects.requireNonNull(pgConf.getString("url")), pgConf.getString("user"), pgConf.getString("passwd"), pgConf.getString("table"));
+            DATABASE = new PostgreConnection(Objects.requireNonNull(pgConf.getString("url")), pgConf.getString("user"), pgConf.getString("passwd"), "invade_playerdata");
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -61,8 +61,8 @@ public final class Invade extends JavaPlugin {
     @Override
     public void onDisable() {
         try {
-            for (Match match : MatchManager.MATCHES) match.stop();
-            if (getConfig().getBoolean("postgresql.enabled")) DATABASE.closeConnection();
+            for (Match match : MatchManager.MATCHES) match.invadeTicks.stop();
+            DATABASE.closeConnection();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

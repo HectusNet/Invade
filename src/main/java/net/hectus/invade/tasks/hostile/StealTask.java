@@ -19,7 +19,7 @@ public class StealTask extends Task {
 
     @Override
     public boolean isInvalid() {
-        return match.players.get(target).isDead();
+        return !match.players.containsKey(target);
     }
 
     @Override
