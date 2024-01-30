@@ -1,11 +1,11 @@
 package net.hectus.invade;
 
-import net.hectus.invade.commands.SlashPatch;
+import net.hectus.invade.commands.SlashSkip;
 import net.hectus.invade.commands.SlashStart;
 import net.hectus.invade.events.BasicPlayerEvents;
 import net.hectus.invade.events.TaskEvents;
-import net.hectus.invade.matches.Match;
-import net.hectus.invade.matches.MatchManager;
+import net.hectus.invade.match.Match;
+import net.hectus.invade.match.MatchManager;
 import net.hectus.lang.Translation;
 import net.hectus.sql.PostgreConnection;
 import org.bukkit.configuration.ConfigurationSection;
@@ -49,8 +49,7 @@ public final class Invade extends JavaPlugin {
         }
 
         Objects.requireNonNull(getCommand("start")).setExecutor(new SlashStart());
-        Objects.requireNonNull(getCommand("skip")).setExecutor(new SlashStart());
-        Objects.requireNonNull(getCommand("patch")).setExecutor(new SlashPatch());
+        Objects.requireNonNull(getCommand("skip")).setExecutor(new SlashSkip());
 
         getServer().getPluginManager().registerEvents(new BasicPlayerEvents(), this);
         getServer().getPluginManager().registerEvents(new TaskEvents(), this);

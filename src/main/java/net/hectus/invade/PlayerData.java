@@ -1,7 +1,9 @@
 package net.hectus.invade;
 
 import com.marcpg.util.Randomizer;
-import net.hectus.invade.matches.Match;
+import net.hectus.invade.match.Match;
+import net.hectus.invade.structures.Cord;
+import net.hectus.invade.structures.Building;
 import net.hectus.invade.tasks.Task;
 import net.hectus.invade.tasks.hostile.BountyTask;
 import net.hectus.invade.tasks.hostile.HuntingTask;
@@ -52,17 +54,18 @@ public class PlayerData {
 
     private static final Random RANDOM = new Random();
 
+    public final BossBar compass;
     public final Player player;
     public final Match match;
-    public ArmorLevel armor;
-    public WeaponLevel weapon;
+
+    public Cord mapMarker;
+
+    private ArmorLevel armor;
+    private WeaponLevel weapon;
     private Task currentTask;
     private int completedTasks = 0;
     private int points = 0;
     private int kills = 0;
-
-    public Cord mapMarker;
-    public BossBar compass;
 
     public PlayerData(Player player, Match match) {
         this.player = player;
@@ -121,7 +124,7 @@ public class PlayerData {
             case 6, 7, 8 -> new TransportTask(match, player, this, Randomizer.fromCollection(match.VALID_ITEMS), Randomizer.fromCollection(Building.destinations()));
             case 9, 10 -> new CheckPointTask(match, player, this, Randomizer.fromArray(Building.values()));
             case 11 -> new EscortTask(match, player, this, Randomizer.fromArray(Building.values()), Randomizer.fromArray(Building.values()).middle().toLocation(match.world));
-            case 12, 13 -> new CleaningTask(match, player, this, match.palette, RANDOM.nextInt(25, 80));
+            case 12, 13 -> new CleaningTask(match, player, this, RANDOM.nextInt(25, 80));
             case 14 -> new TokenCollectTask(match, player, this, RANDOM.nextInt(10, 21));
             // EXCLUDED
             case 15 -> new ArtifactTask(match, player, this, Randomizer.fromArray(ArtifactTask.Artifact.values()));

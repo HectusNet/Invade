@@ -1,4 +1,4 @@
-package net.hectus.invade.matches;
+package net.hectus.invade.match;
 
 import net.hectus.invade.PlayerData;
 import org.bukkit.entity.Player;

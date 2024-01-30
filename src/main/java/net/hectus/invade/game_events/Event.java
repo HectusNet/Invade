@@ -1,6 +1,6 @@
 package net.hectus.invade.game_events;
 
-import net.hectus.invade.matches.Match;
+import net.hectus.invade.match.Match;
 import net.hectus.lang.Translatable;
 
 public abstract class Event extends Translatable {

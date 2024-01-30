@@ -1,7 +1,7 @@
 package net.hectus.invade.tasks;
 
 import net.hectus.invade.PlayerData;
-import net.hectus.invade.matches.Match;
+import net.hectus.invade.match.Match;
 import net.hectus.lang.Translatable;
 import org.bukkit.entity.Player;
 

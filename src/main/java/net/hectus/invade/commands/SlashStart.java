@@ -1,8 +1,8 @@
 package net.hectus.invade.commands;
 
-import net.hectus.invade.BlockRandomizer;
-import net.hectus.invade.matches.Match;
-import net.hectus.invade.matches.MatchManager;
+import net.hectus.invade.structures.BlockRandomizer;
+import net.hectus.invade.match.Match;
+import net.hectus.invade.match.MatchManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;

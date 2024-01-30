@@ -35,7 +35,3 @@ commands:
     usage: /<command>
     aliases: next
     description: Skips your current task, which also gives you -5 points as a punishment.
-
-  ## Generates a patch around a specific coordinate. Testing Command ##
-  patch:
-    usage: /<command> <radius>

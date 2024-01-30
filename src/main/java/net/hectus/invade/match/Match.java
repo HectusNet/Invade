@@ -1,7 +1,11 @@
-package net.hectus.invade.matches;
+package net.hectus.invade.match;
 
 import com.marcpg.data.time.Time;
-import net.hectus.invade.*;
+import net.hectus.invade.Invade;
+import net.hectus.invade.PlayerData;
+import net.hectus.invade.game_events.Event;
+import net.hectus.invade.structures.BlockRandomizer;
+import net.hectus.invade.structures.Building;
 import net.hectus.lang.Translation;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Location;
@@ -22,8 +26,6 @@ import java.util.stream.Collectors;
 import static net.hectus.invade.Invade.DATABASE;
 
 public class Match {
-    public enum State { PRE, IN, END }
-
     public static final Random RANDOM = new Random();
 
     public final Set<Material> VALID_ITEMS;
@@ -31,9 +33,9 @@ public class Match {
     public final InvadeTicks invadeTicks = new InvadeTicks(this, new Time(10, Time.Unit.MINUTES));
     public final World world;
     public final BlockRandomizer.BlockPalette palette;
-    public State state = State.PRE;
     public Instant startingTime;
     public boolean graceTime = true;
+    public Event currentEvent;
 
     public Match(@NotNull World world, BlockRandomizer.BlockPalette palette, Player @NotNull ... players) {
         this.world = world;
@@ -70,7 +72,6 @@ public class Match {
                     Collections.shuffle(buildings);
                     buildings.subList(0, 12).forEach(building -> spawnMobs(building.middle().toLocation(world)));
 
-                    state = State.IN;
                     invadeTicks.start();
                     cancel();
                 }
@@ -83,7 +84,6 @@ public class Match {
     }
 
     public void stop(Player... winners) throws SQLException {
-        state = State.END;
         for (Player player : players.keySet()) {
             player.showTitle(Title.title(Translation.component(player.locale(), "match.end.title"), Translation.component(player.locale(), "match.end.time.subtitle")));
             player.activeBossBars().forEach(player::hideBossBar);

@@ -1,9 +1,12 @@
-package net.hectus.invade;
+package net.hectus.invade.match;
 
 import com.marcpg.data.time.Time;
 import com.marcpg.util.Randomizer;
-import net.hectus.invade.events.TaskEvents;
-import net.hectus.invade.matches.Match;
+import net.hectus.invade.Invade;
+import net.hectus.invade.PlayerData;
+import net.hectus.invade.game_events.ApocalypseEvent;
+import net.hectus.invade.game_events.ChaosEvent;
+import net.hectus.invade.structures.Building;
 import net.hectus.invade.tasks.hostile.TokenCollectTask;
 import net.hectus.invade.tasks.item.TransportTask;
 import net.hectus.invade.tasks.repair.CleaningTask;
@@ -22,15 +25,19 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
 
 import static com.marcpg.color.McFormat.*;
 
 public class InvadeTicks {
-    private static final ScoreboardManager manager = Bukkit.getScoreboardManager();
+    private static final Random RANDOM = new Random();
+    private static final ScoreboardManager MANAGER = Bukkit.getScoreboardManager();
     private final Match match;
     public final Time time;
     private BukkitTask task;
     private boolean second;
+    private double eventChance;
     private static final Component SCOREBOARD_TITLE = Component.text().append(Component.text("I", TextColor.color(143, 0, 255))).append(Component.text("n", TextColor.color(134, 39, 245))).append(Component.text("v", TextColor.color(125, 78, 234))).append(Component.text("a", TextColor.color(115, 117, 224))).append(Component.text("d", TextColor.color(106, 156, 213))).append(Component.text("e", TextColor.color(97, 195, 203))).append(Component.text("-", TextColor.color(176, 140, 144))).append(Component.text("-", TextColor.color(255, 85, 85))).build();
 
     public InvadeTicks(Match match, Time time) {
@@ -43,6 +50,7 @@ public class InvadeTicks {
             second = !second;
             if (second) {
                 time.decrement();
+                processEvents();
                 if (time.get() <= 0) stop();
                 if (time.get() == 780 && time.get() != 900) match.graceTime = false;
                 if (time.get() % 30 == 0)
@@ -51,7 +59,7 @@ public class InvadeTicks {
 
             for (HashMap.Entry<Player, PlayerData> entry : match.players.entrySet()) {
                 updateTasks(entry.getValue());
-                updateScoreboard(this, entry.getValue());
+                updateScoreboard(time, entry.getValue());
                 updateActionBar(entry.getValue());
             }
         }, 0, 10);
@@ -66,6 +74,17 @@ public class InvadeTicks {
         }
     }
 
+    public void processEvents() { // TODO: Continue here
+        // eventChance += .25;
+        // if (Randomizer.boolByChance(eventChance)) {
+        //     match.currentEvent = switch (RANDOM.nextInt(2)) {
+        //         case 0 -> new ChaosEvent(match, RANDOM.nextInt(30, 51));
+        //         default -> new ApocalypseEvent(match);
+        //     };
+        //     match.currentEvent.run();
+        // }
+    }
+
     public static void updateTasks(@NotNull PlayerData playerData) {
         playerData.currentTask().tick();
         if (playerData.currentTask().isInvalid()) {
@@ -74,14 +93,14 @@ public class InvadeTicks {
         }
     }
 
-    public static void updateScoreboard(@NotNull InvadeTicks ticker, @NotNull PlayerData playerData) {
+    public static void updateScoreboard(@NotNull Time time, @NotNull PlayerData playerData) {
         Locale l = playerData.player.locale();
 
-        Scoreboard scoreboard = manager.getNewScoreboard();
+        Scoreboard scoreboard = MANAGER.getNewScoreboard();
         Objective objective = scoreboard.registerNewObjective("invade", Criteria.DUMMY, SCOREBOARD_TITLE);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        objective.getScore(Translation.string(l, "scoreboard.time") + " " + PURPLE + ticker.time.getOneUnitFormatted()).setScore(6);
+        objective.getScore(Translation.string(l, "scoreboard.time") + " " + PURPLE + time.getOneUnitFormatted()).setScore(6);
         objective.getScore(" ").setScore(5);
         objective.getScore(Translation.string(l, "scoreboard.task") + " " + BLUE + playerData.currentTask().getTranslated(l)).setScore(4);
         objective.getScore(Translation.string(l, "scoreboard.completed_tasks") + " " + BLUE + playerData.completedTasks()).setScore(3);
@@ -97,7 +116,7 @@ public class InvadeTicks {
         if (playerData.currentTask() instanceof CleaningTask cleaningTask) {
             playerData.player.sendActionBar(Translation.component(l, "task.cleaning.actionbar.left", cleaningTask.blocksLeft).color(NamedTextColor.GRAY));
         } else if (playerData.currentTask() instanceof TransportTask transportTask && transportTask.foundItem) {
-            if (TaskEvents.isInField(playerData.player.getLocation(), transportTask.destination.corner1, transportTask.destination.corner2)) {
+            if (transportTask.destination.isInBoundary(playerData.player)) {
                 playerData.player.sendActionBar(Translation.component(l, "task.transport.actionbar.sneak").color(NamedTextColor.GREEN).decorate(TextDecoration.UNDERLINED));
             } else {
                 playerData.player.sendActionBar(Translation.component(l, "task.transport.actionbar.found").color(NamedTextColor.GRAY));

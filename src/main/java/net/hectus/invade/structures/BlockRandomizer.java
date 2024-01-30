@@ -1,4 +1,4 @@
-package net.hectus.invade;
+package net.hectus.invade.structures;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

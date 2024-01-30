@@ -1,8 +1,8 @@
 package net.hectus.invade.tasks.movement;
 
-import net.hectus.invade.Building;
+import net.hectus.invade.structures.Building;
 import net.hectus.invade.PlayerData;
-import net.hectus.invade.matches.Match;
+import net.hectus.invade.match.Match;
 import net.hectus.invade.tasks.Task;
 import net.hectus.lang.Translation;
 import org.bukkit.entity.Player;

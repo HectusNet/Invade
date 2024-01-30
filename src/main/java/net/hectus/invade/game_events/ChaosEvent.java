@@ -1,9 +1,9 @@
 package net.hectus.invade.game_events;
 
 import com.marcpg.util.Randomizer;
-import net.hectus.invade.Building;
 import net.hectus.invade.Invade;
-import net.hectus.invade.matches.Match;
+import net.hectus.invade.structures.Building;
+import net.hectus.invade.match.Match;
 import net.hectus.lang.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -24,6 +24,7 @@ public class ChaosEvent extends Event {
             PHANTOM, DROWNED, CAT, PANDA, PILLAGER, RAVAGER, TRADER_LLAMA, WANDERING_TRADER, FOX, BEE, HOGLIN, PIGLIN,
             STRIDER, ZOGLIN, AXOLOTL, GLOW_SQUID, GOAT, ALLAY, FROG, CAMEL, SNIFFER
     );
+
     public final List<Entity> entities = new ArrayList<>();
     public final List<EntityType> entityTypes = new ArrayList<>();
 

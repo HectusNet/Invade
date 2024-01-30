@@ -1,17 +1,16 @@
 package net.hectus.invade.events;
 
-import net.hectus.invade.Cord;
 import net.hectus.invade.Invade;
-import net.hectus.invade.InvadeTicks;
+import net.hectus.invade.match.InvadeTicks;
 import net.hectus.invade.PlayerData;
-import net.hectus.invade.matches.MatchManager;
+import net.hectus.invade.match.MatchManager;
 import net.hectus.invade.tasks.hostile.StealTask;
+import net.hectus.invade.tasks.hostile.TokenCollectTask;
 import net.hectus.invade.tasks.item.ItemSearchTask;
 import net.hectus.invade.tasks.item.TransportTask;
 import net.hectus.invade.tasks.movement.CheckPointTask;
 import net.hectus.invade.tasks.movement.EscortTask;
 import net.hectus.invade.tasks.repair.CleaningTask;
-import net.hectus.invade.tasks.hostile.TokenCollectTask;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -37,11 +36,11 @@ public class TaskEvents implements Listener {
         PlayerData playerData = MatchManager.getPlayerData(event.getPlayer());
         if (playerData == null) return;
 
-        if (playerData.currentTask() instanceof CheckPointTask task && isInField(event.getTo(), task.destination.corner1, task.destination.corner2)) {
+        if (playerData.currentTask() instanceof CheckPointTask task && task.destination.isInBoundary(playerData.player)) {
             playerData.nextTask(true);
-        } else if (playerData.currentTask() instanceof TransportTask task && task.foundItem && isInField(event.getTo(), task.destination.corner1, task.destination.corner2)) {
+        } else if (playerData.currentTask() instanceof TransportTask task && task.foundItem && task.destination.isInBoundary(playerData.player)) {
             InvadeTicks.updateActionBar(playerData);
-        } else if (playerData.currentTask() instanceof EscortTask task && isInField(event.getTo(), task.destination.corner1, task.destination.corner2) && task.villager.getLocation().distance(event.getTo()) < 10) {
+        } else if (playerData.currentTask() instanceof EscortTask task && task.destination.isInBoundary(playerData.player) && task.villager.getLocation().distance(event.getTo()) < 10) {
             playerData.nextTask(true);
         }
     }
@@ -64,7 +63,7 @@ public class TaskEvents implements Listener {
                 return;
             }
         }
-        event.setCancelled(true);
+        if (!MatchManager.MATCHES.isEmpty()) event.setCancelled(true);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -91,7 +90,7 @@ public class TaskEvents implements Listener {
         if (event.isSneaking()) {
             PlayerData playerData = MatchManager.getPlayerData(event.getPlayer());
             if (playerData != null) {
-                if (playerData.currentTask() instanceof TransportTask task && task.foundItem && isInField(event.getPlayer().getLocation(), task.destination.corner1, task.destination.corner2)) {
+                if (playerData.currentTask() instanceof TransportTask task && task.foundItem && task.destination.isInBoundary(playerData.player)) {
                     playerData.nextTask(true);
                 }
             }
@@ -134,13 +133,5 @@ public class TaskEvents implements Listener {
                 }
             }
         }
-    }
-
-    public static boolean isInField(@NotNull Location loc, @NotNull Cord cord1, @NotNull Cord cord2) {
-        int minX = Math.min(cord1.x(), cord2.x());
-        int maxX = Math.max(cord1.x(), cord2.x());
-        int minZ = Math.min(cord1.z(), cord2.z());
-        int maxZ = Math.max(cord1.z(), cord2.z());
-        return loc.x() >= minX && loc.x() <= maxX && loc.z() >= minZ && loc.z() <= maxZ;
     }
 }
