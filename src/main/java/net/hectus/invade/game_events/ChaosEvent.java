@@ -1,13 +1,15 @@
 package net.hectus.invade.game_events;
 
+import com.marcpg.data.time.Time;
 import com.marcpg.util.Randomizer;
 import net.hectus.invade.Invade;
-import net.hectus.invade.structures.Building;
 import net.hectus.invade.match.Match;
+import net.hectus.invade.structures.Building;
 import net.hectus.lang.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,11 +37,6 @@ public class ChaosEvent extends Event {
         }
     }
 
-    public ChaosEvent(Match match, EntityType... mobs) {
-        super(match);
-        entityTypes.addAll(List.of(mobs));
-    }
-
     @Override
     public void run() {
         for (EntityType type : entityTypes) {
@@ -56,7 +53,17 @@ public class ChaosEvent extends Event {
     }
 
     @Override
+    public @Nullable Time getDuration() {
+        return new Time(60);
+    }
+
+    @Override
     public String getTranslated(Locale locale) {
         return Translation.string(locale, "event.chaos.info");
+    }
+
+    @Override
+    public String getDescription(Locale locale) {
+        return Translation.string(locale, "event.chaos.description");
     }
 }

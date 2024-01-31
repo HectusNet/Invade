@@ -21,27 +21,32 @@ import java.util.logging.Logger;
 
 public final class Invade extends JavaPlugin {
     public static Logger LOG;
-    public static Plugin PLUGIN;
     public static FileConfiguration CONFIG;
+    public static Plugin PLUGIN;
     public static PostgreConnection DATABASE;
 
     @Override
     public void onEnable() {
+        saveDefaultConfig();
+
         LOG = getLogger();
+        CONFIG = getConfig();
         PLUGIN = this;
 
-        try {
+        try { // Load translations
             File langDirectory = new File(getDataFolder(), "lang");
-            if (langDirectory.mkdirs()) LOG.info("Created translation directories (plugins/Invade/lang/), as they didn't exist before!");
+            if (langDirectory.mkdirs()) {
+                new File(langDirectory, "en_US.properties");
+                LOG.info("Created translation directories (plugins/Invade/lang/), as they didn't exist before!");
+                LOG.warning("Please download the latest translations now, as the demo en_US.properties doesn't contain any translations.");
+            }
             Translation.load(langDirectory);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        try {
+        try { // Establish database connection
             Class.forName("org.postgresql.Driver");
-            saveDefaultConfig();
-            CONFIG = getConfig();
             ConfigurationSection pgConf = Objects.requireNonNull(CONFIG.getConfigurationSection("postgresql"));
             DATABASE = new PostgreConnection(Objects.requireNonNull(pgConf.getString("url")), pgConf.getString("user"), pgConf.getString("passwd"), "invade_playerdata");
         } catch (SQLException | ClassNotFoundException e) {

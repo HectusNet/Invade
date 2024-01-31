@@ -4,8 +4,6 @@ import com.marcpg.data.time.Time;
 import com.marcpg.util.Randomizer;
 import net.hectus.invade.Invade;
 import net.hectus.invade.PlayerData;
-import net.hectus.invade.game_events.ApocalypseEvent;
-import net.hectus.invade.game_events.ChaosEvent;
 import net.hectus.invade.structures.Building;
 import net.hectus.invade.tasks.hostile.TokenCollectTask;
 import net.hectus.invade.tasks.item.TransportTask;
@@ -25,20 +23,26 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
 
 import static com.marcpg.color.McFormat.*;
 
 public class InvadeTicks {
-    private static final Random RANDOM = new Random();
+    private static final Component SCOREBOARD_TITLE = Component.text()
+            .append(Component.text("I", TextColor.color(143, 0, 255)))
+            .append(Component.text("n", TextColor.color(134, 39, 245)))
+            .append(Component.text("v", TextColor.color(125, 78, 234)))
+            .append(Component.text("a", TextColor.color(115, 117, 224)))
+            .append(Component.text("d", TextColor.color(106, 156, 213)))
+            .append(Component.text("e", TextColor.color(97, 195, 203)))
+            .append(Component.text("-", TextColor.color(176, 140, 144)))
+            .append(Component.text("Beta", TextColor.color(255, 85, 85)))
+            .build();
     private static final ScoreboardManager MANAGER = Bukkit.getScoreboardManager();
     private final Match match;
     public final Time time;
     private BukkitTask task;
     private boolean second;
     private double eventChance;
-    private static final Component SCOREBOARD_TITLE = Component.text().append(Component.text("I", TextColor.color(143, 0, 255))).append(Component.text("n", TextColor.color(134, 39, 245))).append(Component.text("v", TextColor.color(125, 78, 234))).append(Component.text("a", TextColor.color(115, 117, 224))).append(Component.text("d", TextColor.color(106, 156, 213))).append(Component.text("e", TextColor.color(97, 195, 203))).append(Component.text("-", TextColor.color(176, 140, 144))).append(Component.text("-", TextColor.color(255, 85, 85))).build();
 
     public InvadeTicks(Match match, Time time) {
         this.match = match;
@@ -75,14 +79,8 @@ public class InvadeTicks {
     }
 
     public void processEvents() { // TODO: Continue here
-        // eventChance += .25;
-        // if (Randomizer.boolByChance(eventChance)) {
-        //     match.currentEvent = switch (RANDOM.nextInt(2)) {
-        //         case 0 -> new ChaosEvent(match, RANDOM.nextInt(30, 51));
-        //         default -> new ApocalypseEvent(match);
-        //     };
-        //     match.currentEvent.run();
-        // }
+        eventChance += .25;
+        if (Randomizer.boolByChance(eventChance)) match.event();
     }
 
     public static void updateTasks(@NotNull PlayerData playerData) {

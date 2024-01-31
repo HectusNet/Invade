@@ -3,11 +3,13 @@ package net.hectus.invade.match;
 import com.marcpg.data.time.Time;
 import net.hectus.invade.Invade;
 import net.hectus.invade.PlayerData;
+import net.hectus.invade.game_events.ChaosEvent;
 import net.hectus.invade.game_events.Event;
 import net.hectus.invade.structures.BlockRandomizer;
 import net.hectus.invade.structures.Building;
 import net.hectus.lang.Translation;
 import net.kyori.adventure.title.Title;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -104,6 +106,18 @@ public class Match {
         }
 
         MatchManager.MATCHES.remove(this);
+    }
+
+    public void event() {
+        currentEvent = switch (RANDOM.nextInt(graceTime ? 1 : 0, 2)) {
+            default -> new ChaosEvent(this, RANDOM.nextInt(50, 71));
+        };
+        currentEvent.run();
+        currentEvent.startTitle(players.keySet());
+
+        Time duration = currentEvent.getDuration();
+        if (duration != null)
+            Bukkit.getScheduler().runTaskLater(Invade.PLUGIN, () -> currentEvent.done(), duration.get() * 20);
     }
 
     public void generateFeatures(@NotNull BlockRandomizer.BlockPalette blockPalette, @NotNull Location c1, @NotNull Location c2) {
