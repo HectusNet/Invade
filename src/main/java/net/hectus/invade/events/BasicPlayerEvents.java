@@ -58,7 +58,7 @@ public class BasicPlayerEvents implements Listener {
                 if (playerData.match.players.size() <= 1) {
                     playerData.match.invadeTicks.stop();
                 }
-            }, 50);
+            }, 40);
         }
     }
 

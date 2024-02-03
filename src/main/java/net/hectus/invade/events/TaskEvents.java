@@ -36,11 +36,11 @@ public class TaskEvents implements Listener {
         PlayerData playerData = MatchManager.getPlayerData(event.getPlayer());
         if (playerData == null) return;
 
-        if (playerData.currentTask() instanceof CheckPointTask task && task.destination.isInBoundary(playerData.player)) {
+        if (playerData.currentTask() instanceof CheckPointTask task && task.destination.contains(playerData.player)) {
             playerData.nextTask(true);
-        } else if (playerData.currentTask() instanceof TransportTask task && task.foundItem && task.destination.isInBoundary(playerData.player)) {
+        } else if (playerData.currentTask() instanceof TransportTask task && task.foundItem && task.destination.contains(playerData.player)) {
             InvadeTicks.updateActionBar(playerData);
-        } else if (playerData.currentTask() instanceof EscortTask task && task.destination.isInBoundary(playerData.player) && task.villager.getLocation().distance(event.getTo()) < 10) {
+        } else if (playerData.currentTask() instanceof EscortTask task && task.destination.contains(playerData.player) && task.villager.getLocation().distance(event.getTo()) < 10) {
             playerData.nextTask(true);
         }
     }
@@ -90,7 +90,7 @@ public class TaskEvents implements Listener {
         if (event.isSneaking()) {
             PlayerData playerData = MatchManager.getPlayerData(event.getPlayer());
             if (playerData != null) {
-                if (playerData.currentTask() instanceof TransportTask task && task.foundItem && task.destination.isInBoundary(playerData.player)) {
+                if (playerData.currentTask() instanceof TransportTask task && task.foundItem && task.destination.contains(playerData.player)) {
                     playerData.nextTask(true);
                 }
             }

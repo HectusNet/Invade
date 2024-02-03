@@ -114,7 +114,7 @@ public class InvadeTicks {
         if (playerData.currentTask() instanceof CleaningTask cleaningTask) {
             playerData.player.sendActionBar(Translation.component(l, "task.cleaning.actionbar.left", cleaningTask.blocksLeft).color(NamedTextColor.GRAY));
         } else if (playerData.currentTask() instanceof TransportTask transportTask && transportTask.foundItem) {
-            if (transportTask.destination.isInBoundary(playerData.player)) {
+            if (transportTask.destination.contains(playerData.player)) {
                 playerData.player.sendActionBar(Translation.component(l, "task.transport.actionbar.sneak").color(NamedTextColor.GREEN).decorate(TextDecoration.UNDERLINED));
             } else {
                 playerData.player.sendActionBar(Translation.component(l, "task.transport.actionbar.found").color(NamedTextColor.GRAY));

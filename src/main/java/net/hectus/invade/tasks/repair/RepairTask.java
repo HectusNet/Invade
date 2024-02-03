@@ -30,8 +30,8 @@ public class RepairTask extends Task {
 
         // TODO: Set `location` to the location of the Repairable
         location = switch (broken) {
-            case SECURITY_SYSTEM -> (new Random().nextBoolean() ? Building.EAST_SIDE_SECURITY : Building.WEST_SIDE_SECURITY).middle();
-            case TOILET -> (new Random().nextBoolean() ? Building.EAST_SIDE_TOILETS : Building.WEST_SIDE_TOILETS).middle();
+            // case SECURITY_SYSTEM -> (new Random().nextBoolean() ? Building.EAST_SIDE_SECURITY : Building.WEST_SIDE_SECURITY).middle();
+            // case TOILET -> (new Random().nextBoolean() ? Building.EAST_SIDE_TOILETS : Building.WEST_SIDE_TOILETS).middle();
             default -> null;
         };
 
