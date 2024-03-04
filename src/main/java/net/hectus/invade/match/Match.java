@@ -1,13 +1,13 @@
 package net.hectus.invade.match;
 
 import com.marcpg.data.time.Time;
+import com.marcpg.lang.Translation;
 import net.hectus.invade.Invade;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.game_events.ChaosEvent;
 import net.hectus.invade.game_events.Event;
 import net.hectus.invade.structures.BlockRandomizer;
 import net.hectus.invade.structures.Building;
-import net.hectus.lang.Translation;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -15,7 +15,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 import org.postgresql.util.PGInterval;
@@ -45,10 +44,8 @@ public class Match {
 
         // Not the place to use a stream in, but I love streams, so I still did lol
         VALID_ITEMS = world.getEntities().parallelStream()
-                .filter(ItemFrame.class::isInstance)
-                .map(ItemFrame.class::cast)
-                .map(ItemFrame::getItem)
-                .map(ItemStack::getType)
+                .filter(e -> e instanceof ItemFrame)
+                .map(e -> ((ItemFrame) e).getItem().getType())
                 .collect(Collectors.toSet());
 
         for (Player player : players) {
@@ -92,7 +89,7 @@ public class Match {
 
             UUID uuid = player.getUniqueId();
             if (!DATABASE.contains(uuid)) {
-                DATABASE.add(uuid, player.getName());
+                DATABASE.add(Map.of("uuid", uuid, "name", player.getName()));
             }
             DATABASE.set(uuid, "matches", (int) DATABASE.get(uuid, "matches") + 1);
             if (List.of(winners).contains(player)) {

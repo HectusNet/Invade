@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<!DOCTYPE xml>
+<project name="Invade" default="Build">
+  <target name="Build">
+    <jar jarfile="C:\Users\marcg\Documents\TestServer\plugins\${ant.project.name}.jar" basedir="./target/classes/"
+         includes="**/*">
+      <zipgroupfileset
+          dir="${user.home}/.m2/repository/com/marcpg/libpg/0.0.4/"
+          includes="**/*0.0.4.jar"/>
+      <zipgroupfileset
+          dir="${user.home}/.m2/repository/net/hectus/HectusUtilities/0.3.2/"
+          includes="**/*0.3.2.jar"/>
+      <zipgroupfileset
+          dir="${user.home}/.m2/repository/org/postgresql/postgresql/42.7.1/"
+          includes="**/*42.7.1.jar"/>
+    </jar>
+  </target>
+</project>

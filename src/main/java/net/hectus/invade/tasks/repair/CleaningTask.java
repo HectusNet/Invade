@@ -1,9 +1,9 @@
 package net.hectus.invade.tasks.repair;
 
+import com.marcpg.lang.Translation;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.tasks.Task;
-import net.hectus.lang.Translation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

@@ -1,11 +1,11 @@
 package net.hectus.invade.tasks.item;
 
+import com.marcpg.lang.Translation;
 import com.marcpg.text.Formatter;
-import net.hectus.invade.structures.Cord;
-import net.hectus.invade.structures.Building;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
-import net.hectus.lang.Translation;
+import net.hectus.invade.structures.Building;
+import net.hectus.invade.structures.Cord;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.ItemFrame;

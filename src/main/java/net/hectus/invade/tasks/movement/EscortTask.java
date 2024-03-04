@@ -1,10 +1,10 @@
 package net.hectus.invade.tasks.movement;
 
+import com.marcpg.lang.Translation;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.structures.Building;
 import net.hectus.invade.tasks.Task;
-import net.hectus.lang.Translation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;

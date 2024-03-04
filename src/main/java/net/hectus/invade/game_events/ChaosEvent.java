@@ -1,11 +1,11 @@
 package net.hectus.invade.game_events;
 
 import com.marcpg.data.time.Time;
+import com.marcpg.lang.Translation;
 import com.marcpg.util.Randomizer;
 import net.hectus.invade.Invade;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.structures.Building;
-import net.hectus.lang.Translation;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -63,7 +63,7 @@ public class ChaosEvent extends Event {
     }
 
     @Override
-    public String getDescription(Locale locale) {
+    public String getSecondaryTranslated(Locale locale) {
         return Translation.string(locale, "event.chaos.description");
     }
 }

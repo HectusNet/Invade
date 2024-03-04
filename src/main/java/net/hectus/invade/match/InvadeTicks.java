@@ -1,6 +1,7 @@
 package net.hectus.invade.match;
 
 import com.marcpg.data.time.Time;
+import com.marcpg.lang.Translation;
 import com.marcpg.util.Randomizer;
 import net.hectus.invade.Invade;
 import net.hectus.invade.PlayerData;
@@ -8,7 +9,6 @@ import net.hectus.invade.structures.Building;
 import net.hectus.invade.tasks.hostile.TokenCollectTask;
 import net.hectus.invade.tasks.item.TransportTask;
 import net.hectus.invade.tasks.repair.CleaningTask;
-import net.hectus.lang.Translation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -78,7 +78,7 @@ public class InvadeTicks {
         }
     }
 
-    public void processEvents() { // TODO: Continue here
+    public void processEvents() {
         eventChance += .25;
         if (Randomizer.boolByChance(eventChance)) match.event();
     }

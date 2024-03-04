@@ -1,9 +1,10 @@
 package net.hectus.invade;
 
+import com.marcpg.lang.Translation;
 import com.marcpg.util.Randomizer;
 import net.hectus.invade.match.Match;
-import net.hectus.invade.structures.Cord;
 import net.hectus.invade.structures.Building;
+import net.hectus.invade.structures.Cord;
 import net.hectus.invade.tasks.Task;
 import net.hectus.invade.tasks.hostile.BountyTask;
 import net.hectus.invade.tasks.hostile.HuntingTask;
@@ -16,7 +17,6 @@ import net.hectus.invade.tasks.movement.CheckPointTask;
 import net.hectus.invade.tasks.movement.EscortTask;
 import net.hectus.invade.tasks.repair.CleaningTask;
 import net.hectus.invade.tasks.repair.RepairTask;
-import net.hectus.lang.Translation;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

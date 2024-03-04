@@ -1,9 +1,9 @@
 package net.hectus.invade.game_events;
 
 import com.marcpg.data.time.Time;
+import com.marcpg.lang.Translatable;
+import com.marcpg.lang.Translation;
 import net.hectus.invade.match.Match;
-import net.hectus.lang.Translatable;
-import net.hectus.lang.Translation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Locale;
 import java.util.Set;
 
 public abstract class Event extends Translatable {
@@ -23,7 +22,7 @@ public abstract class Event extends Translatable {
 
     public void startTitle(@NotNull Set<Player> players) {
         for (Player player : players) {
-            player.showTitle(Title.title(Component.text(getTranslated(player.locale()) + "!", NamedTextColor.GREEN), Component.text(getDescription(player.locale()), NamedTextColor.GRAY)));
+            player.showTitle(Title.title(Component.text(getTranslated(player.locale()) + "!", NamedTextColor.GREEN), Component.text(getSecondaryTranslated(player.locale()), NamedTextColor.GRAY)));
         }
     }
 
@@ -41,6 +40,4 @@ public abstract class Event extends Translatable {
     public abstract void run();
 
     public abstract @Nullable Time getDuration();
-
-    public abstract String getDescription(Locale locale);
 }

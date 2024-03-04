@@ -1,16 +1,14 @@
 package net.hectus.invade.tasks.repair;
 
+import com.marcpg.lang.Translation;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
-import net.hectus.invade.structures.Building;
 import net.hectus.invade.structures.Cord;
 import net.hectus.invade.tasks.Task;
-import net.hectus.lang.Translation;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
-import java.util.Random;
 
 public class RepairTask extends Task {
     public enum Repairable {

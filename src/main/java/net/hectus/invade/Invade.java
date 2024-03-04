@@ -1,13 +1,13 @@
 package net.hectus.invade;
 
+import com.marcpg.data.database.sql.SQLConnection;
+import com.marcpg.lang.Translation;
 import net.hectus.invade.commands.SlashSkip;
 import net.hectus.invade.commands.SlashStart;
 import net.hectus.invade.events.BasicPlayerEvents;
 import net.hectus.invade.events.TaskEvents;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.match.MatchManager;
-import net.hectus.lang.Translation;
-import net.hectus.sql.PostgreConnection;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -17,13 +17,14 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public final class Invade extends JavaPlugin {
     public static Logger LOG;
     public static FileConfiguration CONFIG;
     public static Plugin PLUGIN;
-    public static PostgreConnection DATABASE;
+    public static SQLConnection<UUID> DATABASE;
 
     @Override
     public void onEnable() {
@@ -33,22 +34,20 @@ public final class Invade extends JavaPlugin {
         CONFIG = getConfig();
         PLUGIN = this;
 
-        try { // Load translations
+        try {
             File langDirectory = new File(getDataFolder(), "lang");
-            if (langDirectory.mkdirs()) {
-                new File(langDirectory, "en_US.properties");
+            if (langDirectory.mkdirs() || new File(langDirectory, "en_US.properties").createNewFile()) {
                 LOG.info("Created translation directories (plugins/Invade/lang/), as they didn't exist before!");
                 LOG.warning("Please download the latest translations now, as the demo en_US.properties doesn't contain any translations.");
             }
-            Translation.load(langDirectory);
+            Translation.loadProperties(langDirectory);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        try { // Establish database connection
-            Class.forName("org.postgresql.Driver");
+        try {
             ConfigurationSection pgConf = Objects.requireNonNull(CONFIG.getConfigurationSection("postgresql"));
-            DATABASE = new PostgreConnection(Objects.requireNonNull(pgConf.getString("url")), pgConf.getString("user"), pgConf.getString("passwd"), "invade_playerdata");
+            DATABASE = new SQLConnection<>(SQLConnection.DatabaseType.POSTGRESQL, Objects.requireNonNull(pgConf.getString("url")), pgConf.getString("user"), pgConf.getString("passwd"), "invade_playerdata", "uuid");
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -76,7 +75,7 @@ public final class Invade extends JavaPlugin {
 
     /*
     POSTGRESQL DATABASE CONFIGURATION:
-    | Name    | player_uuid | player_name  | matches | wins | loses | playtime |
+    | Name    | uuid        | name         | matches | wins | loses | playtime |
     | Type    | UUID        | VARCHAR(255) | INT     | INT  | INT   | INTERVAL |
     | Default | PRIMARY KEY | NOT NULL     | 0       | 0    | 0     | 00:00:00 |
      */

@@ -1,6 +1,6 @@
 package net.hectus.invade.structures;
 
-import net.hectus.lang.Translation;
+import com.marcpg.lang.Translation;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;

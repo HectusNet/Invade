@@ -1,8 +1,8 @@
 package net.hectus.invade.commands;
 
+import com.marcpg.lang.Translation;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.MatchManager;
-import net.hectus.lang.Translation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
