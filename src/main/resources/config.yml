@@ -1,4 +1,15 @@
-postgresql:
-  url: jdbc:postgresql://localhost:5432/hectus
-  user: username
-  passwd: password
+# Database-related configuration:
+database:
+
+  # Sets whether to try to connect to the database or just use no database.
+  enabled: false
+
+  # The address of the database. Should follow "jdbc:postgresql://[ADDRESS]:[PORT]/[DATABASE]".
+  address: "jdbc:postgresql://localhost:5432/hectus"
+
+  # The name of the table of the database to use.
+  table: "invade_playerdata"
+
+  # The credentials to log into the database. The account should not have more permissions than it needs!
+  username: "invade_plugin"
+  password: "5Hj3Af7Fk69ycN"

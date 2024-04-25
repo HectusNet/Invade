@@ -1,6 +1,6 @@
 package net.hectus.invade.tasks.item;
 
-import com.marcpg.lang.Translation;
+import com.marcpg.libpg.lang.Translation;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.structures.Cord;
@@ -40,6 +40,6 @@ public class ArtifactTask extends Task { // TODO: Add artifacts with cords and s
 
     @Override
     public String getTranslated(Locale locale) {
-        return Translation.string(locale, "task.artifact.info", artifact.getTranslated(locale));
+        return Translation.string(locale, "task.artifact", artifact.getTranslated(locale));
     }
 }

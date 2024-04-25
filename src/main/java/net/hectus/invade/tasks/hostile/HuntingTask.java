@@ -1,6 +1,6 @@
 package net.hectus.invade.tasks.hostile;
 
-import com.marcpg.lang.Translation;
+import com.marcpg.libpg.lang.Translation;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.tasks.Task;
@@ -34,6 +34,6 @@ public class HuntingTask extends Task {
 
     @Override
     public String getTranslated(Locale locale) {
-        return Translation.string(locale, "task.hunting.info", required - killed);
+        return Translation.string(locale, "task.hunting", required - killed);
     }
 }

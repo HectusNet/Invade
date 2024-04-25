@@ -1,6 +1,6 @@
 package net.hectus.invade.commands;
 
-import com.marcpg.lang.Translation;
+import com.marcpg.libpg.lang.Translation;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.MatchManager;
 import net.kyori.adventure.text.Component;
@@ -20,13 +20,13 @@ public class SlashSkip implements CommandExecutor {
             if (playerData != null) {
                 ItemStack skipItems = player.getInventory().getItem(0);
                 if (skipItems == null || skipItems.isEmpty() || skipItems.getAmount() <= 0) {
-                    player.sendMessage(Translation.component(player.locale(), "task.skip.no_left").color(NamedTextColor.RED));
+                    player.sendMessage(Translation.component(player.locale(), "task.info.skip.no_skips").color(NamedTextColor.RED));
                     return true;
                 }
 
                 playerData.removePoints(playerData.currentTask().points() / 2);
                 playerData.nextTask(false);
-                player.sendMessage(Translation.component(player.locale(), "task.skip.success").color(NamedTextColor.YELLOW));
+                player.sendMessage(Translation.component(player.locale(), "task.info.skip.success").color(NamedTextColor.YELLOW));
             } else {
                 player.sendMessage(Component.text("You can't skip tasks before the match started!", NamedTextColor.RED));
             }

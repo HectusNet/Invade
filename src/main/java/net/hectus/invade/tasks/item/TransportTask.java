@@ -1,7 +1,7 @@
 package net.hectus.invade.tasks.item;
 
-import com.marcpg.lang.Translation;
-import com.marcpg.text.Formatter;
+import com.marcpg.libpg.lang.Translation;
+import com.marcpg.libpg.text.Formatter;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.structures.Building;
@@ -58,6 +58,6 @@ public class TransportTask extends ItemSearchTask {
 
     @Override
     public String getTranslated(Locale locale) {
-        return Translation.string(locale, "task.transport.info", Formatter.toPascalCase(item.name()), destination.getTranslated(locale));
+        return Translation.string(locale, "task.transport", Formatter.toPascalCase(item.name()), destination.getTranslated(locale));
     }
 }

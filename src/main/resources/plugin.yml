@@ -5,7 +5,7 @@ name: Invade
 description: Plugin for Hectus' game mode called "Invade", where you search items while trying not to die, kill other players and survive.
 
 ### Build Version ###
-version: '${version}'
+version: ${version}
 
 ### Main Class ###
 main: net.hectus.invade.Invade

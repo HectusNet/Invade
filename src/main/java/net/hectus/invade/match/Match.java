@@ -1,7 +1,7 @@
 package net.hectus.invade.match;
 
-import com.marcpg.data.time.Time;
-import com.marcpg.lang.Translation;
+import com.marcpg.libpg.data.time.Time;
+import com.marcpg.libpg.lang.Translation;
 import net.hectus.invade.Invade;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.game_events.ChaosEvent;
@@ -64,7 +64,7 @@ public class Match {
             public void run() {
                 if (timer == 0) {
                     for (Player player : players.keySet()) {
-                        player.showTitle(Title.title(Translation.component(player.locale(), "match.start.title.start", timer), Translation.component(player.locale(), "match.start.title.start.subtitle")));
+                        player.showTitle(Title.title(Translation.component(player.locale(), "match.starting.start", timer), Translation.component(player.locale(), "match.starting.start-sub")));
                     }
 
                     List<Building> buildings = new ArrayList<>(List.of(Building.values()));
@@ -75,7 +75,7 @@ public class Match {
                     cancel();
                 }
                 for (Player player : players.keySet()) {
-                    player.showTitle(Title.title(Translation.component(player.locale(), "match.start.title.timer", timer), Translation.component(player.locale(), "match.start.title.timer.subtitle")));
+                    player.showTitle(Title.title(Translation.component(player.locale(), "match.starting.timer", timer), Translation.component(player.locale(), "match.starting.timer-sub")));
                 }
                 timer--;
             }
@@ -84,7 +84,7 @@ public class Match {
 
     public void stop(Player... winners) throws SQLException {
         for (Player player : players.keySet()) {
-            player.showTitle(Title.title(Translation.component(player.locale(), "match.end.title"), Translation.component(player.locale(), "match.end.time.subtitle")));
+            player.showTitle(Title.title(Translation.component(player.locale(), "match.ending.title"), Translation.component(player.locale(), "match.ending.time")));
             player.activeBossBars().forEach(player::hideBossBar);
 
             UUID uuid = player.getUniqueId();
@@ -118,7 +118,7 @@ public class Match {
     }
 
     public void generateFeatures(@NotNull BlockRandomizer.BlockPalette blockPalette, @NotNull Location c1, @NotNull Location c2) {
-        c1.getWorld().getPlayers().forEach(player -> player.showTitle(Title.title(Translation.component(player.locale(), "match.start.generation"), Translation.component(player.locale(), "match.start.generation.subtitle"))));
+        c1.getWorld().getPlayers().forEach(player -> player.showTitle(Title.title(Translation.component(player.locale(), "match.starting.gen"), Translation.component(player.locale(), "match.starting.gen-sub"))));
         for (int i = 0; i < RANDOM.nextInt(22, 36); i++) {
             Block targetBlock;
             do {

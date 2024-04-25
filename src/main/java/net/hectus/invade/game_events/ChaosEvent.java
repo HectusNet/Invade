@@ -1,8 +1,8 @@
 package net.hectus.invade.game_events;
 
-import com.marcpg.data.time.Time;
-import com.marcpg.lang.Translation;
-import com.marcpg.util.Randomizer;
+import com.marcpg.libpg.data.time.Time;
+import com.marcpg.libpg.lang.Translation;
+import com.marcpg.libpg.util.Randomizer;
 import net.hectus.invade.Invade;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.structures.Building;
@@ -59,7 +59,7 @@ public class ChaosEvent extends Event {
 
     @Override
     public String getTranslated(Locale locale) {
-        return Translation.string(locale, "event.chaos.info");
+        return Translation.string(locale, "event.chaos.name");
     }
 
     @Override

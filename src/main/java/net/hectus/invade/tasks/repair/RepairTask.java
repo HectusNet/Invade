@@ -1,6 +1,6 @@
 package net.hectus.invade.tasks.repair;
 
-import com.marcpg.lang.Translation;
+import com.marcpg.libpg.lang.Translation;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.structures.Cord;
@@ -15,7 +15,7 @@ public class RepairTask extends Task {
         VENDING_MACHINE, SECURITY_SYSTEM, LIGHT, TOILET, DUCT_CLEANING, DUCT_VENTILATOR;
 
         public String getTranslated(Locale locale) {
-            return Translation.string(locale, "task.repair.repairable." + name().toLowerCase());
+            return Translation.string(locale, "task.repairable." + name().toLowerCase());
         }
     }
 
@@ -43,6 +43,6 @@ public class RepairTask extends Task {
 
     @Override
     public String getTranslated(Locale locale) {
-        return Translation.string(locale, "task.repair.info", broken.getTranslated(locale));
+        return Translation.string(locale, "task.repair", broken.getTranslated(locale));
     }
 }

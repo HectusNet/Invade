@@ -1,6 +1,6 @@
 package net.hectus.invade.tasks.movement;
 
-import com.marcpg.lang.Translation;
+import com.marcpg.libpg.lang.Translation;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.structures.Building;
@@ -26,6 +26,6 @@ public class CheckPointTask extends Task {
 
     @Override
     public String getTranslated(Locale locale) {
-        return Translation.string(locale, "task.checkpoint.info", destination.getTranslated(locale));
+        return Translation.string(locale, "task.checkpoint", destination.getTranslated(locale));
     }
 }

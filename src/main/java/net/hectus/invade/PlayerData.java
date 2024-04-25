@@ -1,7 +1,7 @@
 package net.hectus.invade;
 
-import com.marcpg.lang.Translation;
-import com.marcpg.util.Randomizer;
+import com.marcpg.libpg.lang.Translation;
+import com.marcpg.libpg.util.Randomizer;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.structures.Building;
 import net.hectus.invade.structures.Cord;
@@ -100,18 +100,18 @@ public class PlayerData {
                     if (weapon.ordinal() != 11) {
                         weapon = WeaponLevel.values()[weapon.ordinal() + 1];
                         weapon.apply(player);
-                        player.sendMessage(Translation.component(player.locale(), "equipment.weapon.upgrade").color(NamedTextColor.DARK_GREEN));
+                        player.sendMessage(Translation.component(player.locale(), "upgrade.weapon", Translation.string(player.locale(), "upgrade.weapons." + weapon.name().toLowerCase())).color(NamedTextColor.DARK_GREEN));
                     }
                 } else {
                     if (armor.ordinal() != 5) {
                         armor = ArmorLevel.values()[armor.ordinal() + 1];
                         armor.apply(player);
-                        player.sendMessage(Translation.component(player.locale(), "equipment.armor.upgrade").color(NamedTextColor.DARK_GREEN));
+                        player.sendMessage(Translation.component(player.locale(), "upgrade.armor", Translation.string(player.locale(), "upgrade.armors." + armor.name().toLowerCase())).color(NamedTextColor.DARK_GREEN));
                     }
                 }
-                player.sendMessage(Translation.component(player.locale(), "task.done.complete").color(NamedTextColor.GREEN));
+                player.sendMessage(Translation.component(player.locale(), "task.info.completed").color(NamedTextColor.GREEN));
             } else {
-                player.sendMessage(Translation.component(player.locale(), "task.done.invalid").color(NamedTextColor.RED));
+                player.sendMessage(Translation.component(player.locale(), "task.info.invalid").color(NamedTextColor.RED));
             }
         }
 

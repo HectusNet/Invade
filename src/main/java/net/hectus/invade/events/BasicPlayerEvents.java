@@ -1,8 +1,8 @@
 package net.hectus.invade.events;
 
-import com.marcpg.data.time.Time;
-import com.marcpg.lang.Translation;
-import com.marcpg.util.Randomizer;
+import com.marcpg.libpg.data.time.Time;
+import com.marcpg.libpg.lang.Translation;
+import com.marcpg.libpg.util.Randomizer;
 import net.hectus.invade.Invade;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.InvadeTicks;
@@ -69,7 +69,7 @@ public class BasicPlayerEvents implements Listener {
             Match match = MatchManager.getMatchByPlayer(player);
             if (match != null && match.graceTime) {
                 event.setCancelled(true);
-                player.sendMessage(Translation.component(player.locale(), "match.grace.info", new Time(match.invadeTicks.time.get() - 780).getPreciselyFormatted()));
+                player.sendMessage(Translation.component(player.locale(), "match.grace", new Time(match.invadeTicks.time.get() - 780).getPreciselyFormatted()));
             }
         }
     }
@@ -84,7 +84,7 @@ public class BasicPlayerEvents implements Listener {
                 Objects.requireNonNull(event.getItem()).setAmount(event.getItem().getAmount() - 1);
                 playerData.removePoints(playerData.currentTask().points() / 2);
                 playerData.nextTask(false);
-                event.getPlayer().sendMessage(Translation.component(event.getPlayer().locale(), "task.skip.success").color(NamedTextColor.YELLOW));
+                event.getPlayer().sendMessage(Translation.component(event.getPlayer().locale(), "task.info.skip.success").color(NamedTextColor.YELLOW));
             }
         }
     }

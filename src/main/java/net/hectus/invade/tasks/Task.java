@@ -1,11 +1,11 @@
 package net.hectus.invade.tasks;
 
-import com.marcpg.lang.Translatable;
+import com.marcpg.libpg.lang.Translatable;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
 import org.bukkit.entity.Player;
 
-public abstract class Task extends Translatable {
+public abstract class Task implements Translatable {
     public final Match match;
     public final Player player;
     public final PlayerData playerData;

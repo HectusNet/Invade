@@ -100,8 +100,19 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-target/
-dependency-reduced-pom.xml
+.gradle
+build/
+
+# Ignore Gradle GUI config
+gradle-app.setting
+
+# Cache of project
+.gradletasknamecache
+
+**/build/
 
 # Common working directory
 run/
+
+# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
+!gradle-wrapper.jar

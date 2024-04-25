@@ -1,8 +1,8 @@
 package net.hectus.invade.game_events;
 
-import com.marcpg.data.time.Time;
-import com.marcpg.lang.Translatable;
-import com.marcpg.lang.Translation;
+import com.marcpg.libpg.data.time.Time;
+import com.marcpg.libpg.lang.Translatable;
+import com.marcpg.libpg.lang.Translation;
 import net.hectus.invade.match.Match;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public abstract class Event extends Translatable {
+public abstract class Event implements Translatable {
     public final Match match;
 
     public Event(Match match) {
@@ -28,7 +28,7 @@ public abstract class Event extends Translatable {
 
     public void endTitle(@NotNull Set<Player> players) {
         for (Player player : players) {
-            player.showTitle(Title.title(Component.text(getTranslated(player.locale()), NamedTextColor.GOLD), Translation.component(player.locale(), "event.end.subtitle").color(NamedTextColor.RED)));
+            player.showTitle(Title.title(Component.text(getTranslated(player.locale()), NamedTextColor.GOLD), Translation.component(player.locale(), "event.ending").color(NamedTextColor.RED)));
         }
     }
 

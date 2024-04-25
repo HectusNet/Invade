@@ -1,6 +1,6 @@
 package net.hectus.invade.tasks.movement;
 
-import com.marcpg.lang.Translation;
+import com.marcpg.libpg.lang.Translation;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.structures.Building;
@@ -42,6 +42,6 @@ public class EscortTask extends Task {
 
     @Override
     public String getTranslated(Locale locale) {
-        return Translation.string(locale, "task.escort.info", destination.getTranslated(locale));
+        return Translation.string(locale, "task.escort", destination.getTranslated(locale));
     }
 }

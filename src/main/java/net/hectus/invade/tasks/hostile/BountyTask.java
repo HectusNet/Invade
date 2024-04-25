@@ -1,6 +1,6 @@
 package net.hectus.invade.tasks.hostile;
 
-import com.marcpg.lang.Translation;
+import com.marcpg.libpg.lang.Translation;
 import net.hectus.invade.PlayerData;
 import net.hectus.invade.match.Match;
 import net.hectus.invade.structures.Cord;
@@ -36,6 +36,6 @@ public class BountyTask extends Task {
 
     @Override
     public String getTranslated(Locale locale) {
-        return Translation.string(locale, "task.bounty.info", target.getName());
+        return Translation.string(locale, "task.bounty", target.getName());
     }
 }
